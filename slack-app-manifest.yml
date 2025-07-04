@@ -1,0 +1,84 @@
+display_information:
+  name: Time Logger Bot
+  description: Multi-tenant Jira time logging bot with natural language processing. Each user configures their own Jira access for secure, personalized time tracking.
+  background_color: "#2c3e50"
+  long_description: "Time Logger Bot is a sophisticated multi-tenant application that allows team members to log time to Jira tickets using natural language. Each user securely configures their own Jira access, ensuring data privacy and supporting multiple Jira instances (Cloud and Server/Data Center). Features include: natural language time logging, smart ticket selection, comprehensive time reports, customizable icons, and seamless integration with both Slack and Teams."
+
+features:
+  app_home:
+    home_tab_enabled: true
+    messages_tab_enabled: true
+    messages_tab_read_only_enabled: false
+  bot_user:
+    display_name: Time Logger
+    always_online: true
+  slash_commands:
+    - command: /jiraconfig
+      url: https://your-domain.com/slack/events
+      description: Configure your Jira access - supports both Cloud (email+token) and Server (PAT)
+      usage_hint: "Cloud: https://company.atlassian.net api-token user@email.com | Server: https://jira.company.com personal-access-token"
+      should_escape: false
+    - command: /timelog
+      url: https://your-domain.com/slack/events
+      description: Log time to Jira tickets using natural language
+      usage_hint: "3 hours to PROJ-123 working on feature implementation"
+      should_escape: false
+    - command: /mytickets
+      url: https://your-domain.com/slack/events
+      description: Show your assigned Jira tickets with quick log buttons
+      usage_hint: ""
+      should_escape: false
+    - command: /timereport
+      url: https://your-domain.com/slack/events
+      description: Generate time reports for different periods
+      usage_hint: "today | week | month | year"
+      should_escape: false
+    - command: /iconconfig
+      url: https://your-domain.com/slack/events
+      description: Configure icon display preferences
+      usage_hint: "current | large | small | minimal | text | none"
+      should_escape: false
+
+oauth_config:
+  scopes:
+    bot:
+      - app_mentions:read
+      - chat:write
+      - chat:write.public
+      - commands
+      - files:read
+      - im:history
+      - im:read
+      - im:write
+      - mpim:history
+      - mpim:read
+      - mpim:write
+      - channels:history
+      - channels:read
+      - groups:history
+      - groups:read
+      - users:read
+      - users:read.email
+      - reactions:read
+      - reactions:write
+
+settings:
+  event_subscriptions:
+    bot_events:
+      - app_mention
+      - message.channels
+      - message.groups
+      - message.im
+      - message.mpim
+  interactivity:
+    is_enabled: true
+  org_deploy_enabled: false
+  socket_mode_enabled: true
+  token_rotation_enabled: false
+
+# Multi-Tenant Jira Cloud & Server Support
+# - Jira Cloud: Auto-detected for *.atlassian.net URLs, requires email + API token
+# - Jira Server: Auto-detected for other URLs, requires Personal Access Token
+# - All credentials encrypted per-user for security
+# Note: Update the URLs above to match your actual deployment domain
+# For local development with Socket Mode, URLs can be placeholder values 

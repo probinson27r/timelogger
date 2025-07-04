@@ -1,0 +1,53 @@
+{
+  "name": "slack-jira-timelogger",
+  "version": "1.0.0",
+  "description": "Slack bot for logging time to Jira tickets using natural language",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/launcher.js slack",
+    "start:slack": "node src/launcher.js slack",
+    "start:teams": "node src/launcher.js teams",
+    "start:both": "node src/launcher.js both",
+    "dev": "nodemon src/launcher.js slack",
+    "dev:slack": "nodemon src/launcher.js slack",
+    "dev:teams": "nodemon src/launcher.js teams",
+    "dev:both": "nodemon src/launcher.js both",
+    "test": "jest",
+    "setup-env": "node scripts/setup-env.js",
+    "validate": "node scripts/validate-setup.js",
+    "validate:teams": "node scripts/validate-teams-setup.js",
+    "test-multi-tenant": "node scripts/test-multi-tenant-setup.js",
+    "test-auth": "node scripts/test-cloud-server-auth.js",
+    "migrate-db": "node scripts/migrate-database.js",
+    "setup": "npm run validate && npm start",
+    "setup:teams": "npm run validate:teams && npm run start:teams"
+  },
+  "keywords": [
+    "slack",
+    "jira",
+    "timetracking",
+    "bot"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@slack/bolt": "^3.14.0",
+    "axios": "^1.6.0",
+    "botbuilder": "^4.21.0",
+    "chrono-node": "^2.8.3",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "moment": "^2.29.4",
+    "openai": "^4.20.0",
+    "restify": "^11.1.0",
+    "sqlite3": "^5.1.6",
+    "winston": "^3.11.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

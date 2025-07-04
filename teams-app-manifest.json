@@ -1,0 +1,85 @@
+{
+  "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.16/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.16",
+  "version": "1.0.0",
+  "id": "{{TEAMS_APP_ID}}",
+  "packageName": "com.timelogger.teamsbot",
+  "developer": {
+    "name": "Time Logger Bot",
+    "websiteUrl": "https://github.com/yourusername/timelogger",
+    "privacyUrl": "https://github.com/yourusername/timelogger/blob/main/PRIVACY.md",
+    "termsOfUseUrl": "https://github.com/yourusername/timelogger/blob/main/TERMS.md"
+  },
+  "icons": {
+    "color": "timelogger-color.png",
+    "outline": "timelogger-outline.png"
+  },
+  "name": {
+    "short": "Time Logger",
+    "full": "Jira Time Logger Bot"
+  },
+  "description": {
+    "short": "Log time to Jira tickets using natural language",
+    "full": "A Microsoft Teams bot that helps you log time to Jira tickets using natural language processing. You can ask for your assigned tickets, log hours with natural language commands, and generate time reports."
+  },
+  "accentColor": "#FFFFFF",
+  "bots": [
+    {
+      "botId": "{{TEAMS_APP_ID}}",
+      "scopes": [
+        "personal",
+        "team",
+        "groupchat"
+      ],
+      "supportsFiles": false,
+      "isNotificationOnly": false,
+      "commandLists": [
+        {
+          "scopes": [
+            "personal",
+            "team",
+            "groupchat"
+          ],
+          "commands": [
+            {
+              "title": "Log Time",
+              "description": "Log time to Jira tickets using natural language"
+            },
+            {
+              "title": "My Tickets",
+              "description": "Show your assigned Jira tickets"
+            },
+            {
+              "title": "Time Report",
+              "description": "Generate time reports for different periods"
+            },
+            {
+              "title": "Icon Config",
+              "description": "Configure icon display settings"
+            },
+            {
+              "title": "Help",
+              "description": "Show help and usage examples"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "composeExtensions": [],
+  "configurableTabs": [],
+  "staticTabs": [],
+  "permissions": [
+    "identity",
+    "messageTeamMembers"
+  ],
+  "validDomains": [
+    "*.botframework.com",
+    "*.azurewebsites.net",
+    "*.ngrok.io"
+  ],
+  "webApplicationInfo": {
+    "id": "{{TEAMS_APP_ID}}",
+    "resource": "https://RscBasedStoreApp"
+  }
+} 
