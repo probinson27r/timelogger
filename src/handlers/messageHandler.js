@@ -7,10 +7,15 @@ const {
   updateUserSessionById, 
   deleteUserSession,
   deleteUserSessionById 
-} = require('../services/database');
-const { parseDate } = require('../utils/dateParser');
+} = require('../services/auroraService');
+const dateParser = require('../utils/dateParser');
 const { getIconSet } = require('../utils/iconConfig');
 const logger = require('../utils/logger');
+const moment = require('moment');
+const { WebClient } = require('@slack/web-api');
+
+// Version: 2025-07-07-03-45-00 - Fixed date parsing null check error
+// Version 12 - Fixed null check for parsedDate.date
 
 class MessageHandler {
   /**
@@ -90,16 +95,18 @@ class MessageHandler {
       // Parse date if provided
       let parsedDate = null;
       if (dateString) {
-        parsedDate = parseDate(dateString);
-        if (!parsedDate) {
+        const dateResult = dateParser.parseDate(dateString);
+        if (!dateResult.isValid) {
           await say({
             text: `${icons.error}I couldn't understand the date "${dateString}". Please use formats like "yesterday", "last Friday", or "July 1st".`
           });
           return;
         }
         
+        parsedDate = dateResult; // Keep the full result object
+        
         // Check if date is in the future
-        if (parsedDate > new Date()) {
+        if (parsedDate.date && parsedDate.date.isAfter(moment(), 'day')) {
           await say({
             text: `${icons.error}Cannot log time for future dates. Please specify a past date.`
           });
@@ -122,7 +129,7 @@ class MessageHandler {
         const sessionId = await createUserSession(userId, 'slack', 'AWAITING_TICKET_SELECTION', {
           hours,
           description,
-          parsedDate: parsedDate ? parsedDate.toISOString() : null,
+          parsedDate: parsedDate ? parsedDate.iso : null,
           dateString
         });
 
@@ -134,7 +141,7 @@ class MessageHandler {
           value: JSON.stringify({ ticketKey: ticket.key, sessionId })
         }));
 
-        const dateText = parsedDate ? ` on ${parsedDate.toLocaleDateString()}` : '';
+        const dateText = parsedDate ? ` on ${parsedDate.formatted}` : '';
         
         await say({
           text: `Which ticket would you like to log ${hours} hours${dateText} to?`,
@@ -162,11 +169,11 @@ class MessageHandler {
         ticketKey,
         hours,
         description,
-        parsedDate: parsedDate ? parsedDate.toISOString() : null,
+        parsedDate: parsedDate ? parsedDate.iso : null,
         dateString
       });
 
-      const dateStr = parsedDate ? parsedDate.toLocaleDateString() : 'today';
+      const dateStr = parsedDate ? parsedDate.formatted : 'today';
       
       await say({
         text: `Confirm logging ${hours} hours to ${ticketKey} on ${dateStr}?`,
@@ -362,7 +369,18 @@ class MessageHandler {
         dateString
       });
 
-      const dateStr = parsedDate ? new Date(parsedDate).toLocaleDateString() : 'today';
+      // Fix date parsing issue
+      let dateStr = 'today';
+      if (parsedDate && parsedDate !== 'null' && parsedDate !== null) {
+        try {
+          const parsedDateObj = new Date(parsedDate);
+          if (!isNaN(parsedDateObj.getTime())) {
+            dateStr = parsedDateObj.toLocaleDateString();
+          }
+        } catch (error) {
+          // Keep default 'today' if parsing fails
+        }
+      }
       
       await say({
         text: `Confirm logging ${hours} hours to ${ticketKey} on ${dateStr}?`,
@@ -442,8 +460,22 @@ class MessageHandler {
 
       const { ticketKey, hours, description, parsedDate } = session.session_data;
       
-      // Log the time
-      const worklogDate = parsedDate ? new Date(parsedDate) : new Date();
+      // Log the time - fix date parsing issue
+      let worklogDate;
+      if (parsedDate && parsedDate !== 'null' && parsedDate !== null) {
+        try {
+          worklogDate = new Date(parsedDate);
+          // Check if the date is valid
+          if (isNaN(worklogDate.getTime())) {
+            worklogDate = new Date();
+          }
+        } catch (error) {
+          worklogDate = new Date();
+        }
+      } else {
+        worklogDate = new Date();
+      }
+      
       const result = await jiraService.logWork(ticketKey, hours, description, worklogDate);
       
       await deleteUserSessionById(sessionId);
@@ -689,8 +721,78 @@ class MessageHandler {
    */
   async handleQuickTicketSelect({ body, ack, say, client }) {
     await ack();
-    // This method can be implemented if needed for the quick interface
-    // For now, the existing ticket_select handler should work
+    
+    try {
+      const userId = body.user.id;
+      const icons = await getIconSet(userId, 'slack');
+      const selectedTicket = body.actions[0].selected_option?.value;
+
+      if (!selectedTicket) {
+        await say({
+          text: `${icons.error}Please select a ticket.`,
+          response_type: 'ephemeral'
+        });
+        return;
+      }
+
+      // Create session for this ticket selection
+      const sessionId = await createUserSession(userId, 'slack', 'AWAITING_QUICK_TIME', {
+        ticketKey: selectedTicket,
+        source: 'quick_interface'
+      });
+
+      // Show time selection options
+      const timeOptions = [
+        { text: { type: 'plain_text', text: '15 minutes' }, value: '0.25' },
+        { text: { type: 'plain_text', text: '30 minutes' }, value: '0.5' },
+        { text: { type: 'plain_text', text: '1 hour' }, value: '1' },
+        { text: { type: 'plain_text', text: '1.5 hours' }, value: '1.5' },
+        { text: { type: 'plain_text', text: '2 hours' }, value: '2' },
+        { text: { type: 'plain_text', text: '3 hours' }, value: '3' },
+        { text: { type: 'plain_text', text: '4 hours' }, value: '4' },
+        { text: { type: 'plain_text', text: '8 hours' }, value: '8' }
+      ];
+
+      await say({
+        text: `Log time to ${selectedTicket}`,
+        blocks: [
+          {
+            type: 'section',
+            text: {
+              type: 'mrkdwn',
+              text: `${icons.time}*Log time to ${selectedTicket}*\nSelect duration:`
+            },
+            accessory: {
+              type: 'static_select',
+              placeholder: { type: 'plain_text', text: 'Select time' },
+              options: timeOptions,
+              action_id: `quick_time_confirm_${sessionId}`
+            }
+          },
+          {
+            type: 'actions',
+            elements: [
+              {
+                type: 'button',
+                text: { type: 'plain_text', text: 'Cancel' },
+                action_id: `quick_log_cancel_${sessionId}`,
+                value: 'cancel'
+              }
+            ]
+          }
+        ],
+        response_type: 'ephemeral'
+      });
+      
+    } catch (error) {
+      logger.error('Error handling quick ticket select:', error);
+      const userId = body.user.id;
+      const icons = await getIconSet(userId, 'slack');
+      await say({
+        text: `${icons.error}Sorry, I encountered an error processing your ticket selection.`,
+        response_type: 'ephemeral'
+      });
+    }
   }
 
   /**
@@ -698,8 +800,42 @@ class MessageHandler {
    */
   async handleQuickTimeSelect({ body, ack, say, client }) {
     await ack();
-    // This method can be implemented if needed for the quick interface
-    // For now, we can use the quick time confirm pattern
+    
+    try {
+      const userId = body.user.id;
+      const icons = await getIconSet(userId, 'slack');
+      const jiraService = await configHandler.getUserJiraService(userId, 'slack');
+      
+      if (!jiraService) {
+        return await this.sendConfigurationPrompt(say, userId);
+      }
+
+      const selectedTime = body.actions[0].selected_option?.value;
+
+      if (!selectedTime) {
+        await say({
+          text: `${icons.error}Please select a time duration.`,
+          response_type: 'ephemeral'
+        });
+        return;
+      }
+
+      // This requires both ticket and time to be selected in the quick interface
+      // For now, we'll show an error asking them to select a ticket first
+      await say({
+        text: `${icons.info}Please select a ticket first, then choose the time duration.`,
+        response_type: 'ephemeral'
+      });
+      
+    } catch (error) {
+      logger.error('Error handling quick time select:', error);
+      const userId = body.user.id;
+      const icons = await getIconSet(userId, 'slack');
+      await say({
+        text: `${icons.error}Sorry, I encountered an error processing your time selection.`,
+        response_type: 'ephemeral'
+      });
+    }
   }
 
   /**

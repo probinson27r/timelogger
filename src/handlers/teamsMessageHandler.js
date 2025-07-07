@@ -9,10 +9,11 @@ const {
   deleteUserSession,
   deleteUserSessionById 
 } = require('../services/database');
-const { parseDate } = require('../utils/dateParser');
+const dateParser = require('../utils/dateParser');
 const { getIconSet } = require('../utils/iconConfig');
 const { formatAsAdaptiveCard } = require('../utils/teamsFormatter');
 const logger = require('../utils/logger');
+const moment = require('moment');
 
 class TeamsMessageHandler {
   /**
@@ -94,8 +95,8 @@ class TeamsMessageHandler {
       // Parse date if provided
       let parsedDate = null;
       if (dateString) {
-        parsedDate = parseDate(dateString);
-        if (!parsedDate) {
+        const dateResult = dateParser.parseDate(dateString);
+        if (!dateResult.isValid) {
           await context.sendActivity({
             type: 'message',
             text: `${icons.error}I couldn't understand the date "${dateString}". Please use formats like "yesterday", "last Friday", or "July 1st".`
@@ -103,8 +104,10 @@ class TeamsMessageHandler {
           return;
         }
         
+        parsedDate = dateResult; // Keep the full result object
+        
         // Check if date is in the future
-        if (parsedDate > new Date()) {
+        if (parsedDate.date && parsedDate.date.isAfter(moment(), 'day')) {
           await context.sendActivity({
             type: 'message',
             text: `${icons.error}Cannot log time for future dates. Please specify a past date.`
@@ -129,11 +132,11 @@ class TeamsMessageHandler {
         const sessionId = await createUserSession(userId, 'teams', 'AWAITING_TICKET_SELECTION', {
           hours,
           description,
-          parsedDate: parsedDate ? parsedDate.toISOString() : null,
+          parsedDate: parsedDate ? parsedDate.iso : null,
           dateString
         });
 
-        const dateText = parsedDate ? ` on ${parsedDate.toLocaleDateString()}` : '';
+        const dateText = parsedDate ? ` on ${parsedDate.formatted}` : '';
         
         const card = formatAsAdaptiveCard({
           title: `${icons.ticket}Log ${hours} hours${dateText}`,
@@ -159,11 +162,11 @@ class TeamsMessageHandler {
         ticketKey,
         hours,
         description,
-        parsedDate: parsedDate ? parsedDate.toISOString() : null,
+        parsedDate: parsedDate ? parsedDate.iso : null,
         dateString
       });
 
-      const dateStr = parsedDate ? parsedDate.toLocaleDateString() : 'today';
+      const dateStr = parsedDate && parsedDate.date ? new Date(parsedDate.date).toLocaleDateString() : 'today';
       
       const fields = [
         { name: 'Ticket', value: ticketKey },
@@ -353,11 +356,11 @@ class TeamsMessageHandler {
       ticketKey,
       hours,
       description: finalDescription,
-      parsedDate,
+      parsedDate: parsedDate ? parsedDate.iso : null,
       dateString
     });
 
-    const dateStr = parsedDate ? new Date(parsedDate).toLocaleDateString() : 'today';
+    const dateStr = parsedDate && parsedDate.date ? new Date(parsedDate.date).toLocaleDateString() : 'today';
     
     const fields = [
       { name: 'Ticket', value: ticketKey },
@@ -419,8 +422,22 @@ class TeamsMessageHandler {
 
     const { ticketKey, hours, description, parsedDate } = session.session_data;
     
-    // Log the time
-    const worklogDate = parsedDate ? new Date(parsedDate) : new Date();
+    // Log the time - fix date parsing issue
+    let worklogDate;
+    if (parsedDate && parsedDate !== 'null' && parsedDate !== null) {
+      try {
+        worklogDate = new Date(parsedDate);
+        // Check if the date is valid
+        if (isNaN(worklogDate.getTime())) {
+          worklogDate = new Date();
+        }
+      } catch (error) {
+        worklogDate = new Date();
+      }
+    } else {
+      worklogDate = new Date();
+    }
+    
     const result = await jiraService.logWork(ticketKey, hours, description, worklogDate);
     
     await deleteUserSessionById(sessionId);
@@ -551,4 +568,4 @@ class TeamsMessageHandler {
   }
 }
 
-module.exports = new TeamsMessageHandler(); 
+module.exports = new TeamsMessageHandler();
