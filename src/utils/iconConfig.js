@@ -30,7 +30,10 @@ class IconConfig {
           help: '❓',
           config: '⚙️',
           loading: '⏳',
-          cancelled: '🚫'
+          cancelled: '🚫',
+          url: '🔗',
+          user: '👤',
+          email: '📧'
         }
       },
       
@@ -54,7 +57,10 @@ class IconConfig {
           help: '❓💡',
           config: '⚙️🔧',
           loading: '⌛⏳',
-          cancelled: '🚫❌'
+          cancelled: '🚫❌',
+          url: '🔗🌐',
+          user: '👤👥',
+          email: '📧💌'
         }
       },
       
@@ -78,7 +84,10 @@ class IconConfig {
           help: '?',
           config: '◦',
           loading: '○',
-          cancelled: '×'
+          cancelled: '×',
+          url: '▸',
+          user: '•',
+          email: '▪'
         }
       },
       
@@ -102,7 +111,10 @@ class IconConfig {
           help: '?',
           config: '◦',
           loading: '○',
-          cancelled: '×'
+          cancelled: '×',
+          url: '▶',
+          user: '●',
+          email: '▪'
         }
       },
       
@@ -126,7 +138,10 @@ class IconConfig {
           help: '[HELP]',
           config: '[CONFIG]',
           loading: '[LOADING]',
-          cancelled: '[CANCELLED]'
+          cancelled: '[CANCELLED]',
+          url: '[URL]',
+          user: '[USER]',
+          email: '[EMAIL]'
         }
       },
       
@@ -150,7 +165,10 @@ class IconConfig {
           help: '',
           config: '',
           loading: '',
-          cancelled: ''
+          cancelled: '',
+          url: '',
+          user: '',
+          email: ''
         }
       }
     };

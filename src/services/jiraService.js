@@ -1,6 +1,6 @@
 const axios = require('axios');
-const logger = require('../utils/logger');
 const moment = require('moment');
+const logger = require('../utils/logger');
 
 class JiraService {
   constructor() {

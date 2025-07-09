@@ -1,0 +1,906 @@
+{
+  "version": "45.0.0",
+  "artifacts": {
+    "TimeLoggerStack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "TimeLoggerStack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "TimeLoggerStack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://199279692978/ap-southeast-2",
+      "properties": {
+        "templateFile": "TimeLoggerStack.template.json",
+        "terminationProtection": false,
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::199279692978:role/cdk-hnb659fds-deploy-role-199279692978-ap-southeast-2",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::199279692978:role/cdk-hnb659fds-cfn-exec-role-199279692978-ap-southeast-2",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-199279692978-ap-southeast-2/b00deecc10529d301052bbb095f2226042f011a28fca496894e01220acae41c3.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "TimeLoggerStack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::199279692978:role/cdk-hnb659fds-lookup-role-199279692978-ap-southeast-2",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "TimeLoggerStack.assets"
+      ],
+      "metadata": {
+        "/TimeLoggerStack/TimeLoggerVPC/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerVPC55752A33"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerVPC/publicSubnet1/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerVPCpublicSubnet1Subnet1CFAB5BE"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerVPC/publicSubnet1/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerVPCpublicSubnet1RouteTableE8E817E4"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerVPC/publicSubnet1/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerVPCpublicSubnet1RouteTableAssociation70B1C95C"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerVPC/publicSubnet1/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerVPCpublicSubnet1DefaultRoute67F51742"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerVPC/publicSubnet1/EIP": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerVPCpublicSubnet1EIP42232DD4"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerVPC/publicSubnet1/NATGateway": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerVPCpublicSubnet1NATGatewayD0CEDF05"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerVPC/publicSubnet2/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerVPCpublicSubnet2Subnet42F96A5C"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerVPC/publicSubnet2/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerVPCpublicSubnet2RouteTable03383A64"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerVPC/publicSubnet2/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerVPCpublicSubnet2RouteTableAssociationD1990CB5"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerVPC/publicSubnet2/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerVPCpublicSubnet2DefaultRouteB5E4EDB3"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerVPC/privateSubnet1/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerVPCprivateSubnet1Subnet71D3A645"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerVPC/privateSubnet1/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerVPCprivateSubnet1RouteTable522D1D93"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerVPC/privateSubnet1/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerVPCprivateSubnet1RouteTableAssociationE16535BA"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerVPC/privateSubnet1/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerVPCprivateSubnet1DefaultRoute5F691A3D"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerVPC/privateSubnet2/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerVPCprivateSubnet2Subnet6EE6A5D6"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerVPC/privateSubnet2/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerVPCprivateSubnet2RouteTable68EF509A"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerVPC/privateSubnet2/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerVPCprivateSubnet2RouteTableAssociation4B6791F5"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerVPC/privateSubnet2/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerVPCprivateSubnet2DefaultRoute5610ABA0"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerVPC/isolatedSubnet1/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerVPCisolatedSubnet1SubnetE76FE8BE"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerVPC/isolatedSubnet1/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerVPCisolatedSubnet1RouteTableBCCD0725"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerVPC/isolatedSubnet1/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerVPCisolatedSubnet1RouteTableAssociation72B3C69C"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerVPC/isolatedSubnet2/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerVPCisolatedSubnet2SubnetD8215261"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerVPC/isolatedSubnet2/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerVPCisolatedSubnet2RouteTable130DF619"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerVPC/isolatedSubnet2/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerVPCisolatedSubnet2RouteTableAssociation826BABB6"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerVPC/IGW": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerVPCIGWB125F9D0"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerVPC/VPCGW": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerVPCVPCGWA221C841"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerVPC/RestrictDefaultSecurityGroupCustomResource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerVPCRestrictDefaultSecurityGroupCustomResourceC4D4FB2D"
+          }
+        ],
+        "/TimeLoggerStack/Custom::VpcRestrictDefaultSGCustomResourceProvider": [
+          {
+            "type": "aws:cdk:is-custom-resource-handler-customResourceProvider",
+            "data": true
+          }
+        ],
+        "/TimeLoggerStack/Custom::VpcRestrictDefaultSGCustomResourceProvider/Role": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomVpcRestrictDefaultSGCustomResourceProviderRole26592FE0"
+          }
+        ],
+        "/TimeLoggerStack/Custom::VpcRestrictDefaultSGCustomResourceProvider/Handler": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomVpcRestrictDefaultSGCustomResourceProviderHandlerDC833E5E"
+          }
+        ],
+        "/TimeLoggerStack/AuroraSecret/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AuroraSecret41E6E877"
+          }
+        ],
+        "/TimeLoggerStack/AuroraSecret/Attachment/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AuroraSecretAttachment65089D67"
+          }
+        ],
+        "/TimeLoggerStack/AuroraCluster/Subnets/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AuroraClusterSubnetsF3E9E6AD"
+          }
+        ],
+        "/TimeLoggerStack/AuroraCluster/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AuroraClusterSecurityGroupD85BF9CB"
+          }
+        ],
+        "/TimeLoggerStack/AuroraCluster/SecurityGroup/from TimeLoggerStackSlackEventsFunctionSecurityGroup1C7DEC86:{IndirectPort}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AuroraClusterSecurityGroupfromTimeLoggerStackSlackEventsFunctionSecurityGroup1C7DEC86IndirectPort28C53924"
+          }
+        ],
+        "/TimeLoggerStack/AuroraCluster/SecurityGroup/from TimeLoggerStackSlackInteractionsFunctionSecurityGroup701FC6D0:{IndirectPort}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AuroraClusterSecurityGroupfromTimeLoggerStackSlackInteractionsFunctionSecurityGroup701FC6D0IndirectPort06634FC9"
+          }
+        ],
+        "/TimeLoggerStack/AuroraCluster/SecurityGroup/from TimeLoggerStackSlackCommandsFunctionSecurityGroup17ED4428:{IndirectPort}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AuroraClusterSecurityGroupfromTimeLoggerStackSlackCommandsFunctionSecurityGroup17ED4428IndirectPortC7E39E99"
+          }
+        ],
+        "/TimeLoggerStack/AuroraCluster/SecurityGroup/from TimeLoggerStackHealthFunctionSecurityGroup1CEF4CFF:{IndirectPort}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AuroraClusterSecurityGroupfromTimeLoggerStackHealthFunctionSecurityGroup1CEF4CFFIndirectPortDFA0FC00"
+          }
+        ],
+        "/TimeLoggerStack/AuroraCluster/SecurityGroup/from TimeLoggerStackMigrationFunctionSecurityGroup5EC65406:{IndirectPort}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AuroraClusterSecurityGroupfromTimeLoggerStackMigrationFunctionSecurityGroup5EC65406IndirectPort4221DEB1"
+          }
+        ],
+        "/TimeLoggerStack/AuroraCluster/SecurityGroup/from TimeLoggerStackFixPermissionsFunctionSecurityGroup29A0CC12:{IndirectPort}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AuroraClusterSecurityGroupfromTimeLoggerStackFixPermissionsFunctionSecurityGroup29A0CC12IndirectPort7133BF4F"
+          }
+        ],
+        "/TimeLoggerStack/AuroraCluster/SecurityGroup/from TimeLoggerStackDebugVersionFunctionSecurityGroup8D628382:{IndirectPort}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AuroraClusterSecurityGroupfromTimeLoggerStackDebugVersionFunctionSecurityGroup8D628382IndirectPort0B00627E"
+          }
+        ],
+        "/TimeLoggerStack/AuroraCluster/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AuroraCluster23D869C0"
+          }
+        ],
+        "/TimeLoggerStack/AuroraCluster/writer/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AuroraClusterwriter499C523E"
+          }
+        ],
+        "/TimeLoggerStack/AuroraCluster/reader/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AuroraClusterreader22C4AA3E"
+          }
+        ],
+        "/TimeLoggerStack/AppSecrets/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AppSecretsA1997F2A"
+          }
+        ],
+        "/TimeLoggerStack/SlackEventsFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SlackEventsFunctionServiceRole64D4E116"
+          }
+        ],
+        "/TimeLoggerStack/SlackEventsFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SlackEventsFunctionServiceRoleDefaultPolicy838D0D18"
+          }
+        ],
+        "/TimeLoggerStack/SlackEventsFunction/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SlackEventsFunctionSecurityGroupA9EFDD1A"
+          }
+        ],
+        "/TimeLoggerStack/SlackEventsFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SlackEventsFunctionAC08BCF7"
+          }
+        ],
+        "/TimeLoggerStack/SlackEventsFunction/LogRetention/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SlackEventsFunctionLogRetentionBBA4E783"
+          }
+        ],
+        "/TimeLoggerStack/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB"
+          }
+        ],
+        "/TimeLoggerStack/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB"
+          }
+        ],
+        "/TimeLoggerStack/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A"
+          }
+        ],
+        "/TimeLoggerStack/SlackInteractionsFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SlackInteractionsFunctionServiceRole71501F9D"
+          }
+        ],
+        "/TimeLoggerStack/SlackInteractionsFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SlackInteractionsFunctionServiceRoleDefaultPolicy08B4306A"
+          }
+        ],
+        "/TimeLoggerStack/SlackInteractionsFunction/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SlackInteractionsFunctionSecurityGroup53F6469F"
+          }
+        ],
+        "/TimeLoggerStack/SlackInteractionsFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SlackInteractionsFunctionE8D0C949"
+          }
+        ],
+        "/TimeLoggerStack/SlackInteractionsFunction/LogRetention/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SlackInteractionsFunctionLogRetention330C81B7"
+          }
+        ],
+        "/TimeLoggerStack/SlackCommandsFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SlackCommandsFunctionServiceRole6BE30790"
+          }
+        ],
+        "/TimeLoggerStack/SlackCommandsFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SlackCommandsFunctionServiceRoleDefaultPolicy94761AA8"
+          }
+        ],
+        "/TimeLoggerStack/SlackCommandsFunction/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SlackCommandsFunctionSecurityGroupE28E7B8A"
+          }
+        ],
+        "/TimeLoggerStack/SlackCommandsFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SlackCommandsFunctionE5E2271F"
+          }
+        ],
+        "/TimeLoggerStack/SlackCommandsFunction/LogRetention/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SlackCommandsFunctionLogRetention83507E46"
+          }
+        ],
+        "/TimeLoggerStack/HealthFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "HealthFunctionServiceRole04552894"
+          }
+        ],
+        "/TimeLoggerStack/HealthFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "HealthFunctionServiceRoleDefaultPolicy57228674"
+          }
+        ],
+        "/TimeLoggerStack/HealthFunction/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "HealthFunctionSecurityGroupA0404FB6"
+          }
+        ],
+        "/TimeLoggerStack/HealthFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "HealthFunction19D7724A"
+          }
+        ],
+        "/TimeLoggerStack/HealthFunction/LogRetention/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "HealthFunctionLogRetentionC7891B18"
+          }
+        ],
+        "/TimeLoggerStack/MigrationFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MigrationFunctionServiceRole14DD1B1C"
+          }
+        ],
+        "/TimeLoggerStack/MigrationFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MigrationFunctionServiceRoleDefaultPolicy280CFF3C"
+          }
+        ],
+        "/TimeLoggerStack/MigrationFunction/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MigrationFunctionSecurityGroup81A9E498"
+          }
+        ],
+        "/TimeLoggerStack/MigrationFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MigrationFunction1060F2E0"
+          }
+        ],
+        "/TimeLoggerStack/MigrationFunction/LogRetention/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MigrationFunctionLogRetention97E21693"
+          }
+        ],
+        "/TimeLoggerStack/FixPermissionsFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FixPermissionsFunctionServiceRole2552DB11"
+          }
+        ],
+        "/TimeLoggerStack/FixPermissionsFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FixPermissionsFunctionServiceRoleDefaultPolicy2DEF44EF"
+          }
+        ],
+        "/TimeLoggerStack/FixPermissionsFunction/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FixPermissionsFunctionSecurityGroupEAEBCE60"
+          }
+        ],
+        "/TimeLoggerStack/FixPermissionsFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FixPermissionsFunction42875A1B"
+          }
+        ],
+        "/TimeLoggerStack/FixPermissionsFunction/LogRetention/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FixPermissionsFunctionLogRetention08510A3A"
+          }
+        ],
+        "/TimeLoggerStack/DebugVersionFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DebugVersionFunctionServiceRole62435101"
+          }
+        ],
+        "/TimeLoggerStack/DebugVersionFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DebugVersionFunctionServiceRoleDefaultPolicyD5B52C29"
+          }
+        ],
+        "/TimeLoggerStack/DebugVersionFunction/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DebugVersionFunctionSecurityGroup815D530A"
+          }
+        ],
+        "/TimeLoggerStack/DebugVersionFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DebugVersionFunction3C760E44"
+          }
+        ],
+        "/TimeLoggerStack/DebugVersionFunction/LogRetention/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DebugVersionFunctionLogRetentionD5F43144"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerAPI/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerAPIB7D1F046"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerAPI/CloudWatchRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerAPICloudWatchRoleDCC01175"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerAPI/Account": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerAPIAccount30880F67"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerAPI/Deployment/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerAPIDeployment7CBB09283ff5efbeeaaf366dc18ff46130f1d466"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerAPI/DeploymentStage.prod/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerAPIDeploymentStageprod389B0C07"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerAPI/Endpoint": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerAPIEndpointF06C7E15"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerAPI/Default/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerAPIOPTIONS4B160C29"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerAPI/Default/slack/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerAPIslack8CA74833"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerAPI/Default/slack/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerAPIslackOPTIONSEE5E308B"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerAPI/Default/slack/events/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerAPIslackeventsE4D7D811"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerAPI/Default/slack/events/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerAPIslackeventsOPTIONS0863A0DE"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerAPI/Default/slack/events/POST/ApiPermission.TimeLoggerStackTimeLoggerAPID4A2EA75.POST..slack.events": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerAPIslackeventsPOSTApiPermissionTimeLoggerStackTimeLoggerAPID4A2EA75POSTslackevents91EC2BC4"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerAPI/Default/slack/events/POST/ApiPermission.Test.TimeLoggerStackTimeLoggerAPID4A2EA75.POST..slack.events": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerAPIslackeventsPOSTApiPermissionTestTimeLoggerStackTimeLoggerAPID4A2EA75POSTslackeventsD30DFB05"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerAPI/Default/slack/events/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerAPIslackeventsPOST59A240D6"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerAPI/Default/slack/interactions/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerAPIslackinteractions2688B0B5"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerAPI/Default/slack/interactions/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerAPIslackinteractionsOPTIONSC6008D36"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerAPI/Default/slack/interactions/POST/ApiPermission.TimeLoggerStackTimeLoggerAPID4A2EA75.POST..slack.interactions": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerAPIslackinteractionsPOSTApiPermissionTimeLoggerStackTimeLoggerAPID4A2EA75POSTslackinteractionsB3AD21EE"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerAPI/Default/slack/interactions/POST/ApiPermission.Test.TimeLoggerStackTimeLoggerAPID4A2EA75.POST..slack.interactions": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerAPIslackinteractionsPOSTApiPermissionTestTimeLoggerStackTimeLoggerAPID4A2EA75POSTslackinteractions509EFD02"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerAPI/Default/slack/interactions/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerAPIslackinteractionsPOSTF473AFA8"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerAPI/Default/slack/commands/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerAPIslackcommands4B53098E"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerAPI/Default/slack/commands/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerAPIslackcommandsOPTIONSBEDEF5A2"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerAPI/Default/slack/commands/POST/ApiPermission.TimeLoggerStackTimeLoggerAPID4A2EA75.POST..slack.commands": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerAPIslackcommandsPOSTApiPermissionTimeLoggerStackTimeLoggerAPID4A2EA75POSTslackcommands3D403EDA"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerAPI/Default/slack/commands/POST/ApiPermission.Test.TimeLoggerStackTimeLoggerAPID4A2EA75.POST..slack.commands": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerAPIslackcommandsPOSTApiPermissionTestTimeLoggerStackTimeLoggerAPID4A2EA75POSTslackcommandsE4080AE2"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerAPI/Default/slack/commands/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerAPIslackcommandsPOST1AE62FCA"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerAPI/Default/health/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerAPIhealth28D754A9"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerAPI/Default/health/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerAPIhealthOPTIONSCC8E9D6E"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerAPI/Default/health/GET/ApiPermission.TimeLoggerStackTimeLoggerAPID4A2EA75.GET..health": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerAPIhealthGETApiPermissionTimeLoggerStackTimeLoggerAPID4A2EA75GEThealthB1A88F7A"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerAPI/Default/health/GET/ApiPermission.Test.TimeLoggerStackTimeLoggerAPID4A2EA75.GET..health": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerAPIhealthGETApiPermissionTestTimeLoggerStackTimeLoggerAPID4A2EA75GEThealthCC1F09A0"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerAPI/Default/health/GET/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerAPIhealthGETA4A7687D"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerAPI/Default/migration/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerAPImigration88894E4A"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerAPI/Default/migration/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerAPImigrationOPTIONSD66D2C3C"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerAPI/Default/migration/POST/ApiPermission.TimeLoggerStackTimeLoggerAPID4A2EA75.POST..migration": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerAPImigrationPOSTApiPermissionTimeLoggerStackTimeLoggerAPID4A2EA75POSTmigrationB7E3954C"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerAPI/Default/migration/POST/ApiPermission.Test.TimeLoggerStackTimeLoggerAPID4A2EA75.POST..migration": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerAPImigrationPOSTApiPermissionTestTimeLoggerStackTimeLoggerAPID4A2EA75POSTmigration8B61BF71"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerAPI/Default/migration/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerAPImigrationPOSTDD90FCFA"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerAPI/Default/fix-permissions/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerAPIfixpermissionsEFDBF2A5"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerAPI/Default/fix-permissions/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerAPIfixpermissionsOPTIONS99D96CAF"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerAPI/Default/fix-permissions/POST/ApiPermission.TimeLoggerStackTimeLoggerAPID4A2EA75.POST..fix-permissions": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerAPIfixpermissionsPOSTApiPermissionTimeLoggerStackTimeLoggerAPID4A2EA75POSTfixpermissionsB2D2A642"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerAPI/Default/fix-permissions/POST/ApiPermission.Test.TimeLoggerStackTimeLoggerAPID4A2EA75.POST..fix-permissions": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerAPIfixpermissionsPOSTApiPermissionTestTimeLoggerStackTimeLoggerAPID4A2EA75POSTfixpermissionsEB6F319F"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerAPI/Default/fix-permissions/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerAPIfixpermissionsPOST8924A804"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerAPI/Default/debug-version/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerAPIdebugversion043EE655"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerAPI/Default/debug-version/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerAPIdebugversionOPTIONS134623BC"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerAPI/Default/debug-version/GET/ApiPermission.TimeLoggerStackTimeLoggerAPID4A2EA75.GET..debug-version": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerAPIdebugversionGETApiPermissionTimeLoggerStackTimeLoggerAPID4A2EA75GETdebugversion4B3CB033"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerAPI/Default/debug-version/GET/ApiPermission.Test.TimeLoggerStackTimeLoggerAPID4A2EA75.GET..debug-version": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerAPIdebugversionGETApiPermissionTestTimeLoggerStackTimeLoggerAPID4A2EA75GETdebugversion601D63B6"
+          }
+        ],
+        "/TimeLoggerStack/TimeLoggerAPI/Default/debug-version/GET/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TimeLoggerAPIdebugversionGETCDD09BDE"
+          }
+        ],
+        "/TimeLoggerStack/DatabaseEndpoint": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatabaseEndpoint"
+          }
+        ],
+        "/TimeLoggerStack/DatabaseWriterEndpoint": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatabaseWriterEndpoint"
+          }
+        ],
+        "/TimeLoggerStack/DatabaseSecretArn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatabaseSecretArn"
+          }
+        ],
+        "/TimeLoggerStack/AppSecretsArn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AppSecretsArn"
+          }
+        ],
+        "/TimeLoggerStack/ApiGatewayUrl": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiGatewayUrl"
+          }
+        ],
+        "/TimeLoggerStack/SlackEventsUrl": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SlackEventsUrl"
+          }
+        ],
+        "/TimeLoggerStack/SlackInteractionsUrl": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SlackInteractionsUrl"
+          }
+        ],
+        "/TimeLoggerStack/SlackCommandsUrl": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SlackCommandsUrl"
+          }
+        ],
+        "/TimeLoggerStack/HealthCheckUrl": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "HealthCheckUrl"
+          }
+        ],
+        "/TimeLoggerStack/MigrationUrl": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MigrationUrl"
+          }
+        ],
+        "/TimeLoggerStack/FixPermissionsUrl": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FixPermissionsUrl"
+          }
+        ],
+        "/TimeLoggerStack/DebugVersionUrl": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DebugVersionUrl"
+          }
+        ],
+        "/TimeLoggerStack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/TimeLoggerStack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/TimeLoggerStack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "TimeLoggerStack"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  },
+  "minimumCliVersion": "2.1020.2"
+}

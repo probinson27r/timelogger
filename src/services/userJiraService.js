@@ -216,8 +216,9 @@ class UserJiraService {
       const workMoment = moment(workDate).startOf('day');
       
       if (!workMoment.isSame(today)) {
-        // For past dates, use simple date format and let Jira handle the time
-        worklogData.started = moment(workDate).format('YYYY-MM-DD');
+        // For past dates, use ISO format with time set to 9 AM to avoid timezone issues
+        const workDateWithTime = moment(workDate).hour(9).minute(0).second(0).millisecond(0);
+        worklogData.started = workDateWithTime.format('YYYY-MM-DDTHH:mm:ss.SSSZZ');
       }
       // If it's today, omit the started field and Jira will use current time
 
@@ -282,16 +283,21 @@ class UserJiraService {
    */
   async getMyWorklogs(startDate = null, endDate = null) {
     try {
-      // Default to current month if no dates provided
+      // Use today's date if no dates provided
       if (!startDate) {
-        startDate = moment().startOf('month').format('YYYY-MM-DD');
+        startDate = moment().format('YYYY-MM-DD');
       }
       if (!endDate) {
-        endDate = moment().endOf('month').format('YYYY-MM-DD');
+        endDate = moment().format('YYYY-MM-DD');
       }
+
+      logger.info('[DEBUG] getMyWorklogs called with:', { startDate, endDate, email: this.email });
 
       // Get worklogs for the user
       const jql = `worklogAuthor = currentUser() AND worklogDate >= "${startDate}" AND worklogDate <= "${endDate}"`;
+      
+      logger.info('[DEBUG] JQL query:', jql);
+      
       const response = await this.axiosInstance.get('/rest/api/2/search', {
         params: {
           jql: jql,
@@ -299,6 +305,11 @@ class UserJiraService {
           maxResults: 1000,
           expand: 'worklog'
         }
+      });
+
+      logger.info('[DEBUG] Jira API response:', {
+        total: response.data.total,
+        issuesCount: response.data.issues ? response.data.issues.length : 0
       });
 
       const worklogs = [];
@@ -376,6 +387,11 @@ class UserJiraService {
         case 'year':
           startDate = moment().startOf('year').format('YYYY-MM-DD');
           endDate = moment().endOf('year').format('YYYY-MM-DD');
+          break;
+        case 'all':
+          // For "all", use the last year to avoid overwhelming results
+          startDate = moment().subtract(1, 'year').format('YYYY-MM-DD');
+          endDate = moment().format('YYYY-MM-DD');
           break;
         default:
           startDate = moment().format('YYYY-MM-DD');

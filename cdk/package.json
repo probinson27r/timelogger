@@ -1,0 +1,25 @@
+{
+  "name": "timelogger-aws-infrastructure",
+  "version": "1.0.0",
+  "description": "AWS CDK infrastructure for TimeLogger Slack bot with Aurora database",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "cdk": "cdk",
+    "deploy": "cdk deploy",
+    "destroy": "cdk destroy",
+    "diff": "cdk diff",
+    "synth": "cdk synth",
+    "bootstrap": "cdk bootstrap"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "^2.149.0",
+    "constructs": "^10.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "aws-cdk": "^2.149.0",
+    "ts-node": "^10.9.0"
+  }
+} 

@@ -1,0 +1,4307 @@
+{
+ "Description": "TimeLogger Slack Bot with Aurora database",
+ "Resources": {
+  "TimeLoggerVPC55752A33": {
+   "Type": "AWS::EC2::VPC",
+   "Properties": {
+    "CidrBlock": "10.0.0.0/16",
+    "EnableDnsHostnames": true,
+    "EnableDnsSupport": true,
+    "InstanceTenancy": "default",
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "TimeLoggerStack/TimeLoggerVPC"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerVPC/Resource"
+   }
+  },
+  "TimeLoggerVPCpublicSubnet1Subnet1CFAB5BE": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "ap-southeast-2a",
+    "CidrBlock": "10.0.0.0/24",
+    "MapPublicIpOnLaunch": true,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "public"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Public"
+     },
+     {
+      "Key": "Name",
+      "Value": "TimeLoggerStack/TimeLoggerVPC/publicSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "TimeLoggerVPC55752A33"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerVPC/publicSubnet1/Subnet"
+   }
+  },
+  "TimeLoggerVPCpublicSubnet1RouteTableE8E817E4": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "TimeLoggerStack/TimeLoggerVPC/publicSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "TimeLoggerVPC55752A33"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerVPC/publicSubnet1/RouteTable"
+   }
+  },
+  "TimeLoggerVPCpublicSubnet1RouteTableAssociation70B1C95C": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "TimeLoggerVPCpublicSubnet1RouteTableE8E817E4"
+    },
+    "SubnetId": {
+     "Ref": "TimeLoggerVPCpublicSubnet1Subnet1CFAB5BE"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerVPC/publicSubnet1/RouteTableAssociation"
+   }
+  },
+  "TimeLoggerVPCpublicSubnet1DefaultRoute67F51742": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "GatewayId": {
+     "Ref": "TimeLoggerVPCIGWB125F9D0"
+    },
+    "RouteTableId": {
+     "Ref": "TimeLoggerVPCpublicSubnet1RouteTableE8E817E4"
+    }
+   },
+   "DependsOn": [
+    "TimeLoggerVPCVPCGWA221C841"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerVPC/publicSubnet1/DefaultRoute"
+   }
+  },
+  "TimeLoggerVPCpublicSubnet1EIP42232DD4": {
+   "Type": "AWS::EC2::EIP",
+   "Properties": {
+    "Domain": "vpc",
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "TimeLoggerStack/TimeLoggerVPC/publicSubnet1"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerVPC/publicSubnet1/EIP"
+   }
+  },
+  "TimeLoggerVPCpublicSubnet1NATGatewayD0CEDF05": {
+   "Type": "AWS::EC2::NatGateway",
+   "Properties": {
+    "AllocationId": {
+     "Fn::GetAtt": [
+      "TimeLoggerVPCpublicSubnet1EIP42232DD4",
+      "AllocationId"
+     ]
+    },
+    "SubnetId": {
+     "Ref": "TimeLoggerVPCpublicSubnet1Subnet1CFAB5BE"
+    },
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "TimeLoggerStack/TimeLoggerVPC/publicSubnet1"
+     }
+    ]
+   },
+   "DependsOn": [
+    "TimeLoggerVPCpublicSubnet1DefaultRoute67F51742",
+    "TimeLoggerVPCpublicSubnet1RouteTableAssociation70B1C95C"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerVPC/publicSubnet1/NATGateway"
+   }
+  },
+  "TimeLoggerVPCpublicSubnet2Subnet42F96A5C": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "ap-southeast-2b",
+    "CidrBlock": "10.0.1.0/24",
+    "MapPublicIpOnLaunch": true,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "public"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Public"
+     },
+     {
+      "Key": "Name",
+      "Value": "TimeLoggerStack/TimeLoggerVPC/publicSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "TimeLoggerVPC55752A33"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerVPC/publicSubnet2/Subnet"
+   }
+  },
+  "TimeLoggerVPCpublicSubnet2RouteTable03383A64": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "TimeLoggerStack/TimeLoggerVPC/publicSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "TimeLoggerVPC55752A33"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerVPC/publicSubnet2/RouteTable"
+   }
+  },
+  "TimeLoggerVPCpublicSubnet2RouteTableAssociationD1990CB5": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "TimeLoggerVPCpublicSubnet2RouteTable03383A64"
+    },
+    "SubnetId": {
+     "Ref": "TimeLoggerVPCpublicSubnet2Subnet42F96A5C"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerVPC/publicSubnet2/RouteTableAssociation"
+   }
+  },
+  "TimeLoggerVPCpublicSubnet2DefaultRouteB5E4EDB3": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "GatewayId": {
+     "Ref": "TimeLoggerVPCIGWB125F9D0"
+    },
+    "RouteTableId": {
+     "Ref": "TimeLoggerVPCpublicSubnet2RouteTable03383A64"
+    }
+   },
+   "DependsOn": [
+    "TimeLoggerVPCVPCGWA221C841"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerVPC/publicSubnet2/DefaultRoute"
+   }
+  },
+  "TimeLoggerVPCprivateSubnet1Subnet71D3A645": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "ap-southeast-2a",
+    "CidrBlock": "10.0.2.0/24",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "private"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Private"
+     },
+     {
+      "Key": "Name",
+      "Value": "TimeLoggerStack/TimeLoggerVPC/privateSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "TimeLoggerVPC55752A33"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerVPC/privateSubnet1/Subnet"
+   }
+  },
+  "TimeLoggerVPCprivateSubnet1RouteTable522D1D93": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "TimeLoggerStack/TimeLoggerVPC/privateSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "TimeLoggerVPC55752A33"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerVPC/privateSubnet1/RouteTable"
+   }
+  },
+  "TimeLoggerVPCprivateSubnet1RouteTableAssociationE16535BA": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "TimeLoggerVPCprivateSubnet1RouteTable522D1D93"
+    },
+    "SubnetId": {
+     "Ref": "TimeLoggerVPCprivateSubnet1Subnet71D3A645"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerVPC/privateSubnet1/RouteTableAssociation"
+   }
+  },
+  "TimeLoggerVPCprivateSubnet1DefaultRoute5F691A3D": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "NatGatewayId": {
+     "Ref": "TimeLoggerVPCpublicSubnet1NATGatewayD0CEDF05"
+    },
+    "RouteTableId": {
+     "Ref": "TimeLoggerVPCprivateSubnet1RouteTable522D1D93"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerVPC/privateSubnet1/DefaultRoute"
+   }
+  },
+  "TimeLoggerVPCprivateSubnet2Subnet6EE6A5D6": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "ap-southeast-2b",
+    "CidrBlock": "10.0.3.0/24",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "private"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Private"
+     },
+     {
+      "Key": "Name",
+      "Value": "TimeLoggerStack/TimeLoggerVPC/privateSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "TimeLoggerVPC55752A33"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerVPC/privateSubnet2/Subnet"
+   }
+  },
+  "TimeLoggerVPCprivateSubnet2RouteTable68EF509A": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "TimeLoggerStack/TimeLoggerVPC/privateSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "TimeLoggerVPC55752A33"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerVPC/privateSubnet2/RouteTable"
+   }
+  },
+  "TimeLoggerVPCprivateSubnet2RouteTableAssociation4B6791F5": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "TimeLoggerVPCprivateSubnet2RouteTable68EF509A"
+    },
+    "SubnetId": {
+     "Ref": "TimeLoggerVPCprivateSubnet2Subnet6EE6A5D6"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerVPC/privateSubnet2/RouteTableAssociation"
+   }
+  },
+  "TimeLoggerVPCprivateSubnet2DefaultRoute5610ABA0": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "NatGatewayId": {
+     "Ref": "TimeLoggerVPCpublicSubnet1NATGatewayD0CEDF05"
+    },
+    "RouteTableId": {
+     "Ref": "TimeLoggerVPCprivateSubnet2RouteTable68EF509A"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerVPC/privateSubnet2/DefaultRoute"
+   }
+  },
+  "TimeLoggerVPCisolatedSubnet1SubnetE76FE8BE": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "ap-southeast-2a",
+    "CidrBlock": "10.0.4.0/24",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "isolated"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Isolated"
+     },
+     {
+      "Key": "Name",
+      "Value": "TimeLoggerStack/TimeLoggerVPC/isolatedSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "TimeLoggerVPC55752A33"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerVPC/isolatedSubnet1/Subnet"
+   }
+  },
+  "TimeLoggerVPCisolatedSubnet1RouteTableBCCD0725": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "TimeLoggerStack/TimeLoggerVPC/isolatedSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "TimeLoggerVPC55752A33"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerVPC/isolatedSubnet1/RouteTable"
+   }
+  },
+  "TimeLoggerVPCisolatedSubnet1RouteTableAssociation72B3C69C": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "TimeLoggerVPCisolatedSubnet1RouteTableBCCD0725"
+    },
+    "SubnetId": {
+     "Ref": "TimeLoggerVPCisolatedSubnet1SubnetE76FE8BE"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerVPC/isolatedSubnet1/RouteTableAssociation"
+   }
+  },
+  "TimeLoggerVPCisolatedSubnet2SubnetD8215261": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "ap-southeast-2b",
+    "CidrBlock": "10.0.5.0/24",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "isolated"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Isolated"
+     },
+     {
+      "Key": "Name",
+      "Value": "TimeLoggerStack/TimeLoggerVPC/isolatedSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "TimeLoggerVPC55752A33"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerVPC/isolatedSubnet2/Subnet"
+   }
+  },
+  "TimeLoggerVPCisolatedSubnet2RouteTable130DF619": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "TimeLoggerStack/TimeLoggerVPC/isolatedSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "TimeLoggerVPC55752A33"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerVPC/isolatedSubnet2/RouteTable"
+   }
+  },
+  "TimeLoggerVPCisolatedSubnet2RouteTableAssociation826BABB6": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "TimeLoggerVPCisolatedSubnet2RouteTable130DF619"
+    },
+    "SubnetId": {
+     "Ref": "TimeLoggerVPCisolatedSubnet2SubnetD8215261"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerVPC/isolatedSubnet2/RouteTableAssociation"
+   }
+  },
+  "TimeLoggerVPCIGWB125F9D0": {
+   "Type": "AWS::EC2::InternetGateway",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "TimeLoggerStack/TimeLoggerVPC"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerVPC/IGW"
+   }
+  },
+  "TimeLoggerVPCVPCGWA221C841": {
+   "Type": "AWS::EC2::VPCGatewayAttachment",
+   "Properties": {
+    "InternetGatewayId": {
+     "Ref": "TimeLoggerVPCIGWB125F9D0"
+    },
+    "VpcId": {
+     "Ref": "TimeLoggerVPC55752A33"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerVPC/VPCGW"
+   }
+  },
+  "TimeLoggerVPCRestrictDefaultSecurityGroupCustomResourceC4D4FB2D": {
+   "Type": "Custom::VpcRestrictDefaultSG",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "CustomVpcRestrictDefaultSGCustomResourceProviderHandlerDC833E5E",
+      "Arn"
+     ]
+    },
+    "DefaultSecurityGroupId": {
+     "Fn::GetAtt": [
+      "TimeLoggerVPC55752A33",
+      "DefaultSecurityGroup"
+     ]
+    },
+    "Account": "199279692978"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerVPC/RestrictDefaultSecurityGroupCustomResource/Default"
+   }
+  },
+  "CustomVpcRestrictDefaultSGCustomResourceProviderRole26592FE0": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Version": "2012-10-17",
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ]
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Sub": "arn:${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+     }
+    ],
+    "Policies": [
+     {
+      "PolicyName": "Inline",
+      "PolicyDocument": {
+       "Version": "2012-10-17",
+       "Statement": [
+        {
+         "Effect": "Allow",
+         "Action": [
+          "ec2:AuthorizeSecurityGroupIngress",
+          "ec2:AuthorizeSecurityGroupEgress",
+          "ec2:RevokeSecurityGroupIngress",
+          "ec2:RevokeSecurityGroupEgress"
+         ],
+         "Resource": [
+          {
+           "Fn::Join": [
+            "",
+            [
+             "arn:aws:ec2:ap-southeast-2:199279692978:security-group/",
+             {
+              "Fn::GetAtt": [
+               "TimeLoggerVPC55752A33",
+               "DefaultSecurityGroup"
+              ]
+             }
+            ]
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/Custom::VpcRestrictDefaultSGCustomResourceProvider/Role"
+   }
+  },
+  "CustomVpcRestrictDefaultSGCustomResourceProviderHandlerDC833E5E": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-199279692978-ap-southeast-2",
+     "S3Key": "7fa1e366ee8a9ded01fc355f704cff92bfd179574e6f9cfee800a3541df1b200.zip"
+    },
+    "Timeout": 900,
+    "MemorySize": 128,
+    "Handler": "__entrypoint__.handler",
+    "Role": {
+     "Fn::GetAtt": [
+      "CustomVpcRestrictDefaultSGCustomResourceProviderRole26592FE0",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs22.x",
+    "Description": "Lambda function for removing all inbound/outbound rules from the VPC default security group"
+   },
+   "DependsOn": [
+    "CustomVpcRestrictDefaultSGCustomResourceProviderRole26592FE0"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/Custom::VpcRestrictDefaultSGCustomResourceProvider/Handler",
+    "aws:asset:path": "asset.7fa1e366ee8a9ded01fc355f704cff92bfd179574e6f9cfee800a3541df1b200",
+    "aws:asset:property": "Code"
+   }
+  },
+  "AuroraSecret41E6E877": {
+   "Type": "AWS::SecretsManager::Secret",
+   "Properties": {
+    "Description": "Aurora PostgreSQL credentials for TimeLogger",
+    "GenerateSecretString": {
+     "ExcludeCharacters": "\"@/\\'",
+     "GenerateStringKey": "password",
+     "IncludeSpace": false,
+     "PasswordLength": 32,
+     "SecretStringTemplate": "{\"username\":\"timelogger_admin\"}"
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/AuroraSecret/Resource"
+   }
+  },
+  "AuroraSecretAttachment65089D67": {
+   "Type": "AWS::SecretsManager::SecretTargetAttachment",
+   "Properties": {
+    "SecretId": {
+     "Ref": "AuroraSecret41E6E877"
+    },
+    "TargetId": {
+     "Ref": "AuroraCluster23D869C0"
+    },
+    "TargetType": "AWS::RDS::DBCluster"
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/AuroraSecret/Attachment/Resource"
+   }
+  },
+  "AuroraClusterSubnetsF3E9E6AD": {
+   "Type": "AWS::RDS::DBSubnetGroup",
+   "Properties": {
+    "DBSubnetGroupDescription": "Subnets for AuroraCluster database",
+    "SubnetIds": [
+     {
+      "Ref": "TimeLoggerVPCisolatedSubnet1SubnetE76FE8BE"
+     },
+     {
+      "Ref": "TimeLoggerVPCisolatedSubnet2SubnetD8215261"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/AuroraCluster/Subnets/Default"
+   }
+  },
+  "AuroraClusterSecurityGroupD85BF9CB": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "RDS security group",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "TimeLoggerVPC55752A33"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/AuroraCluster/SecurityGroup/Resource"
+   }
+  },
+  "AuroraClusterSecurityGroupfromTimeLoggerStackSlackEventsFunctionSecurityGroup1C7DEC86IndirectPort28C53924": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "from TimeLoggerStackSlackEventsFunctionSecurityGroup1C7DEC86:{IndirectPort}",
+    "FromPort": {
+     "Fn::GetAtt": [
+      "AuroraCluster23D869C0",
+      "Endpoint.Port"
+     ]
+    },
+    "GroupId": {
+     "Fn::GetAtt": [
+      "AuroraClusterSecurityGroupD85BF9CB",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "SlackEventsFunctionSecurityGroupA9EFDD1A",
+      "GroupId"
+     ]
+    },
+    "ToPort": {
+     "Fn::GetAtt": [
+      "AuroraCluster23D869C0",
+      "Endpoint.Port"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/AuroraCluster/SecurityGroup/from TimeLoggerStackSlackEventsFunctionSecurityGroup1C7DEC86:{IndirectPort}"
+   }
+  },
+  "AuroraClusterSecurityGroupfromTimeLoggerStackSlackInteractionsFunctionSecurityGroup701FC6D0IndirectPort06634FC9": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "from TimeLoggerStackSlackInteractionsFunctionSecurityGroup701FC6D0:{IndirectPort}",
+    "FromPort": {
+     "Fn::GetAtt": [
+      "AuroraCluster23D869C0",
+      "Endpoint.Port"
+     ]
+    },
+    "GroupId": {
+     "Fn::GetAtt": [
+      "AuroraClusterSecurityGroupD85BF9CB",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "SlackInteractionsFunctionSecurityGroup53F6469F",
+      "GroupId"
+     ]
+    },
+    "ToPort": {
+     "Fn::GetAtt": [
+      "AuroraCluster23D869C0",
+      "Endpoint.Port"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/AuroraCluster/SecurityGroup/from TimeLoggerStackSlackInteractionsFunctionSecurityGroup701FC6D0:{IndirectPort}"
+   }
+  },
+  "AuroraClusterSecurityGroupfromTimeLoggerStackSlackCommandsFunctionSecurityGroup17ED4428IndirectPortC7E39E99": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "from TimeLoggerStackSlackCommandsFunctionSecurityGroup17ED4428:{IndirectPort}",
+    "FromPort": {
+     "Fn::GetAtt": [
+      "AuroraCluster23D869C0",
+      "Endpoint.Port"
+     ]
+    },
+    "GroupId": {
+     "Fn::GetAtt": [
+      "AuroraClusterSecurityGroupD85BF9CB",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "SlackCommandsFunctionSecurityGroupE28E7B8A",
+      "GroupId"
+     ]
+    },
+    "ToPort": {
+     "Fn::GetAtt": [
+      "AuroraCluster23D869C0",
+      "Endpoint.Port"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/AuroraCluster/SecurityGroup/from TimeLoggerStackSlackCommandsFunctionSecurityGroup17ED4428:{IndirectPort}"
+   }
+  },
+  "AuroraClusterSecurityGroupfromTimeLoggerStackHealthFunctionSecurityGroup1CEF4CFFIndirectPortDFA0FC00": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "from TimeLoggerStackHealthFunctionSecurityGroup1CEF4CFF:{IndirectPort}",
+    "FromPort": {
+     "Fn::GetAtt": [
+      "AuroraCluster23D869C0",
+      "Endpoint.Port"
+     ]
+    },
+    "GroupId": {
+     "Fn::GetAtt": [
+      "AuroraClusterSecurityGroupD85BF9CB",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "HealthFunctionSecurityGroupA0404FB6",
+      "GroupId"
+     ]
+    },
+    "ToPort": {
+     "Fn::GetAtt": [
+      "AuroraCluster23D869C0",
+      "Endpoint.Port"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/AuroraCluster/SecurityGroup/from TimeLoggerStackHealthFunctionSecurityGroup1CEF4CFF:{IndirectPort}"
+   }
+  },
+  "AuroraClusterSecurityGroupfromTimeLoggerStackMigrationFunctionSecurityGroup5EC65406IndirectPort4221DEB1": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "from TimeLoggerStackMigrationFunctionSecurityGroup5EC65406:{IndirectPort}",
+    "FromPort": {
+     "Fn::GetAtt": [
+      "AuroraCluster23D869C0",
+      "Endpoint.Port"
+     ]
+    },
+    "GroupId": {
+     "Fn::GetAtt": [
+      "AuroraClusterSecurityGroupD85BF9CB",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "MigrationFunctionSecurityGroup81A9E498",
+      "GroupId"
+     ]
+    },
+    "ToPort": {
+     "Fn::GetAtt": [
+      "AuroraCluster23D869C0",
+      "Endpoint.Port"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/AuroraCluster/SecurityGroup/from TimeLoggerStackMigrationFunctionSecurityGroup5EC65406:{IndirectPort}"
+   }
+  },
+  "AuroraClusterSecurityGroupfromTimeLoggerStackFixPermissionsFunctionSecurityGroup29A0CC12IndirectPort7133BF4F": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "from TimeLoggerStackFixPermissionsFunctionSecurityGroup29A0CC12:{IndirectPort}",
+    "FromPort": {
+     "Fn::GetAtt": [
+      "AuroraCluster23D869C0",
+      "Endpoint.Port"
+     ]
+    },
+    "GroupId": {
+     "Fn::GetAtt": [
+      "AuroraClusterSecurityGroupD85BF9CB",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "FixPermissionsFunctionSecurityGroupEAEBCE60",
+      "GroupId"
+     ]
+    },
+    "ToPort": {
+     "Fn::GetAtt": [
+      "AuroraCluster23D869C0",
+      "Endpoint.Port"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/AuroraCluster/SecurityGroup/from TimeLoggerStackFixPermissionsFunctionSecurityGroup29A0CC12:{IndirectPort}"
+   }
+  },
+  "AuroraClusterSecurityGroupfromTimeLoggerStackDebugVersionFunctionSecurityGroup8D628382IndirectPort0B00627E": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "from TimeLoggerStackDebugVersionFunctionSecurityGroup8D628382:{IndirectPort}",
+    "FromPort": {
+     "Fn::GetAtt": [
+      "AuroraCluster23D869C0",
+      "Endpoint.Port"
+     ]
+    },
+    "GroupId": {
+     "Fn::GetAtt": [
+      "AuroraClusterSecurityGroupD85BF9CB",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "DebugVersionFunctionSecurityGroup815D530A",
+      "GroupId"
+     ]
+    },
+    "ToPort": {
+     "Fn::GetAtt": [
+      "AuroraCluster23D869C0",
+      "Endpoint.Port"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/AuroraCluster/SecurityGroup/from TimeLoggerStackDebugVersionFunctionSecurityGroup8D628382:{IndirectPort}"
+   }
+  },
+  "AuroraCluster23D869C0": {
+   "Type": "AWS::RDS::DBCluster",
+   "Properties": {
+    "BackupRetentionPeriod": 7,
+    "CopyTagsToSnapshot": true,
+    "DBClusterParameterGroupName": "default.aurora-postgresql15",
+    "DBSubnetGroupName": {
+     "Ref": "AuroraClusterSubnetsF3E9E6AD"
+    },
+    "DatabaseName": "timelogger",
+    "DeletionProtection": false,
+    "Engine": "aurora-postgresql",
+    "EngineVersion": "15.4",
+    "MasterUserPassword": {
+     "Fn::Join": [
+      "",
+      [
+       "{{resolve:secretsmanager:",
+       {
+        "Ref": "AuroraSecret41E6E877"
+       },
+       ":SecretString:password::}}"
+      ]
+     ]
+    },
+    "MasterUsername": {
+     "Fn::Join": [
+      "",
+      [
+       "{{resolve:secretsmanager:",
+       {
+        "Ref": "AuroraSecret41E6E877"
+       },
+       ":SecretString:username::}}"
+      ]
+     ]
+    },
+    "Port": 5432,
+    "ServerlessV2ScalingConfiguration": {
+     "MaxCapacity": 2,
+     "MinCapacity": 0.5
+    },
+    "VpcSecurityGroupIds": [
+     {
+      "Fn::GetAtt": [
+       "AuroraClusterSecurityGroupD85BF9CB",
+       "GroupId"
+      ]
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/AuroraCluster/Resource"
+   }
+  },
+  "AuroraClusterwriter499C523E": {
+   "Type": "AWS::RDS::DBInstance",
+   "Properties": {
+    "DBClusterIdentifier": {
+     "Ref": "AuroraCluster23D869C0"
+    },
+    "DBInstanceClass": "db.serverless",
+    "Engine": "aurora-postgresql",
+    "PromotionTier": 0,
+    "PubliclyAccessible": false
+   },
+   "DependsOn": [
+    "TimeLoggerVPCisolatedSubnet1RouteTableAssociation72B3C69C",
+    "TimeLoggerVPCisolatedSubnet2RouteTableAssociation826BABB6"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/AuroraCluster/writer/Resource"
+   }
+  },
+  "AuroraClusterreader22C4AA3E": {
+   "Type": "AWS::RDS::DBInstance",
+   "Properties": {
+    "DBClusterIdentifier": {
+     "Ref": "AuroraCluster23D869C0"
+    },
+    "DBInstanceClass": "db.serverless",
+    "Engine": "aurora-postgresql",
+    "PromotionTier": 1,
+    "PubliclyAccessible": false
+   },
+   "DependsOn": [
+    "AuroraClusterwriter499C523E",
+    "TimeLoggerVPCisolatedSubnet1RouteTableAssociation72B3C69C",
+    "TimeLoggerVPCisolatedSubnet2RouteTableAssociation826BABB6"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/AuroraCluster/reader/Resource"
+   }
+  },
+  "AppSecretsA1997F2A": {
+   "Type": "AWS::SecretsManager::Secret",
+   "Properties": {
+    "Description": "Application secrets for TimeLogger",
+    "SecretString": "{\"SLACK_BOT_TOKEN\":\"CHANGE_ME\",\"SLACK_SIGNING_SECRET\":\"CHANGE_ME\",\"SLACK_APP_TOKEN\":\"CHANGE_ME\",\"OPENAI_API_KEY\":\"CHANGE_ME\",\"ENCRYPTION_KEY\":\"CHANGE_ME_32_CHARS_LONG_KEY_HERE\",\"TEAMS_APP_ID\":\"\",\"TEAMS_APP_PASSWORD\":\"\"}"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/AppSecrets/Resource"
+   }
+  },
+  "SlackEventsFunctionServiceRole64D4E116": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     },
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "DependsOn": [
+    "TimeLoggerVPCprivateSubnet1DefaultRoute5F691A3D",
+    "TimeLoggerVPCprivateSubnet1RouteTableAssociationE16535BA",
+    "TimeLoggerVPCprivateSubnet2DefaultRoute5610ABA0",
+    "TimeLoggerVPCprivateSubnet2RouteTableAssociation4B6791F5"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/SlackEventsFunction/ServiceRole/Resource"
+   }
+  },
+  "SlackEventsFunctionServiceRoleDefaultPolicy838D0D18": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "secretsmanager:DescribeSecret",
+        "secretsmanager:GetSecretValue"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Ref": "AppSecretsA1997F2A"
+        },
+        {
+         "Ref": "AuroraSecret41E6E877"
+        }
+       ]
+      },
+      {
+       "Action": "secretsmanager:GetSecretValue",
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Ref": "AppSecretsA1997F2A"
+        },
+        {
+         "Ref": "AuroraSecret41E6E877"
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "SlackEventsFunctionServiceRoleDefaultPolicy838D0D18",
+    "Roles": [
+     {
+      "Ref": "SlackEventsFunctionServiceRole64D4E116"
+     }
+    ]
+   },
+   "DependsOn": [
+    "TimeLoggerVPCprivateSubnet1DefaultRoute5F691A3D",
+    "TimeLoggerVPCprivateSubnet1RouteTableAssociationE16535BA",
+    "TimeLoggerVPCprivateSubnet2DefaultRoute5610ABA0",
+    "TimeLoggerVPCprivateSubnet2RouteTableAssociation4B6791F5"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/SlackEventsFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "SlackEventsFunctionSecurityGroupA9EFDD1A": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Automatic security group for Lambda Function TimeLoggerStackSlackEventsFunctionF952717E",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "TimeLoggerVPC55752A33"
+    }
+   },
+   "DependsOn": [
+    "TimeLoggerVPCprivateSubnet1DefaultRoute5F691A3D",
+    "TimeLoggerVPCprivateSubnet1RouteTableAssociationE16535BA",
+    "TimeLoggerVPCprivateSubnet2DefaultRoute5610ABA0",
+    "TimeLoggerVPCprivateSubnet2RouteTableAssociation4B6791F5"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/SlackEventsFunction/SecurityGroup/Resource"
+   }
+  },
+  "SlackEventsFunctionAC08BCF7": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-199279692978-ap-southeast-2",
+     "S3Key": "543f780cc2062944291d5ea5db87318327a05924328830f9152b23fbafc86d4a.zip"
+    },
+    "Description": "Handle Slack events (messages, mentions) - Fixed v2025-07-07-NULL-CHECK",
+    "Environment": {
+     "Variables": {
+      "DB_SECRET_ARN": {
+       "Ref": "AuroraSecret41E6E877"
+      },
+      "APP_SECRETS_ARN": {
+       "Ref": "AppSecretsA1997F2A"
+      },
+      "NODE_ENV": "production",
+      "FORCE_REBUILD": "2025-07-09-01-15-00-FORCE-REFRESH-ALL-LAMBDAS"
+     }
+    },
+    "FunctionName": "timelogger-slack-events",
+    "Handler": "lambda/slack-events.handler",
+    "MemorySize": 512,
+    "Role": {
+     "Fn::GetAtt": [
+      "SlackEventsFunctionServiceRole64D4E116",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs18.x",
+    "Timeout": 30,
+    "VpcConfig": {
+     "SecurityGroupIds": [
+      {
+       "Fn::GetAtt": [
+        "SlackEventsFunctionSecurityGroupA9EFDD1A",
+        "GroupId"
+       ]
+      }
+     ],
+     "SubnetIds": [
+      {
+       "Ref": "TimeLoggerVPCprivateSubnet1Subnet71D3A645"
+      },
+      {
+       "Ref": "TimeLoggerVPCprivateSubnet2Subnet6EE6A5D6"
+      }
+     ]
+    }
+   },
+   "DependsOn": [
+    "SlackEventsFunctionServiceRoleDefaultPolicy838D0D18",
+    "SlackEventsFunctionServiceRole64D4E116",
+    "TimeLoggerVPCprivateSubnet1DefaultRoute5F691A3D",
+    "TimeLoggerVPCprivateSubnet1RouteTableAssociationE16535BA",
+    "TimeLoggerVPCprivateSubnet2DefaultRoute5610ABA0",
+    "TimeLoggerVPCprivateSubnet2RouteTableAssociation4B6791F5"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/SlackEventsFunction/Resource",
+    "aws:asset:path": "asset.543f780cc2062944291d5ea5db87318327a05924328830f9152b23fbafc86d4a",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "SlackEventsFunctionLogRetentionBBA4E783": {
+   "Type": "Custom::LogRetention",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+      "Arn"
+     ]
+    },
+    "LogGroupName": {
+     "Fn::Join": [
+      "",
+      [
+       "/aws/lambda/",
+       {
+        "Ref": "SlackEventsFunctionAC08BCF7"
+       }
+      ]
+     ]
+    },
+    "RetentionInDays": 7
+   },
+   "DependsOn": [
+    "TimeLoggerVPCprivateSubnet1DefaultRoute5F691A3D",
+    "TimeLoggerVPCprivateSubnet1RouteTableAssociationE16535BA",
+    "TimeLoggerVPCprivateSubnet2DefaultRoute5610ABA0",
+    "TimeLoggerVPCprivateSubnet2RouteTableAssociation4B6791F5"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/SlackEventsFunction/LogRetention/Resource"
+   }
+  },
+  "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/Resource"
+   }
+  },
+  "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "logs:DeleteRetentionPolicy",
+        "logs:PutRetentionPolicy"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB",
+    "Roles": [
+     {
+      "Ref": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Handler": "index.handler",
+    "Runtime": "nodejs22.x",
+    "Timeout": 900,
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-199279692978-ap-southeast-2",
+     "S3Key": "2819175352ad1ce0dae768e83fc328fb70fb5f10b4a8ff0ccbcb791f02b0716d.zip"
+    },
+    "Role": {
+     "Fn::GetAtt": [
+      "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
+      "Arn"
+     ]
+    }
+   },
+   "DependsOn": [
+    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB",
+    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/Resource",
+    "aws:asset:path": "asset.2819175352ad1ce0dae768e83fc328fb70fb5f10b4a8ff0ccbcb791f02b0716d",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "SlackInteractionsFunctionServiceRole71501F9D": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     },
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "DependsOn": [
+    "TimeLoggerVPCprivateSubnet1DefaultRoute5F691A3D",
+    "TimeLoggerVPCprivateSubnet1RouteTableAssociationE16535BA",
+    "TimeLoggerVPCprivateSubnet2DefaultRoute5610ABA0",
+    "TimeLoggerVPCprivateSubnet2RouteTableAssociation4B6791F5"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/SlackInteractionsFunction/ServiceRole/Resource"
+   }
+  },
+  "SlackInteractionsFunctionServiceRoleDefaultPolicy08B4306A": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "secretsmanager:DescribeSecret",
+        "secretsmanager:GetSecretValue"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Ref": "AppSecretsA1997F2A"
+        },
+        {
+         "Ref": "AuroraSecret41E6E877"
+        }
+       ]
+      },
+      {
+       "Action": "secretsmanager:GetSecretValue",
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Ref": "AppSecretsA1997F2A"
+        },
+        {
+         "Ref": "AuroraSecret41E6E877"
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "SlackInteractionsFunctionServiceRoleDefaultPolicy08B4306A",
+    "Roles": [
+     {
+      "Ref": "SlackInteractionsFunctionServiceRole71501F9D"
+     }
+    ]
+   },
+   "DependsOn": [
+    "TimeLoggerVPCprivateSubnet1DefaultRoute5F691A3D",
+    "TimeLoggerVPCprivateSubnet1RouteTableAssociationE16535BA",
+    "TimeLoggerVPCprivateSubnet2DefaultRoute5610ABA0",
+    "TimeLoggerVPCprivateSubnet2RouteTableAssociation4B6791F5"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/SlackInteractionsFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "SlackInteractionsFunctionSecurityGroup53F6469F": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Automatic security group for Lambda Function TimeLoggerStackSlackInteractionsFunction20ADC818",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "TimeLoggerVPC55752A33"
+    }
+   },
+   "DependsOn": [
+    "TimeLoggerVPCprivateSubnet1DefaultRoute5F691A3D",
+    "TimeLoggerVPCprivateSubnet1RouteTableAssociationE16535BA",
+    "TimeLoggerVPCprivateSubnet2DefaultRoute5610ABA0",
+    "TimeLoggerVPCprivateSubnet2RouteTableAssociation4B6791F5"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/SlackInteractionsFunction/SecurityGroup/Resource"
+   }
+  },
+  "SlackInteractionsFunctionE8D0C949": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-199279692978-ap-southeast-2",
+     "S3Key": "543f780cc2062944291d5ea5db87318327a05924328830f9152b23fbafc86d4a.zip"
+    },
+    "Description": "Handle Slack interactions (buttons, menus) - Fixed v2025-07-07-NULL-CHECK",
+    "Environment": {
+     "Variables": {
+      "DB_SECRET_ARN": {
+       "Ref": "AuroraSecret41E6E877"
+      },
+      "APP_SECRETS_ARN": {
+       "Ref": "AppSecretsA1997F2A"
+      },
+      "NODE_ENV": "production",
+      "FORCE_REBUILD": "2025-07-09-01-15-00-FORCE-REFRESH-ALL-LAMBDAS"
+     }
+    },
+    "FunctionName": "timelogger-slack-interactions",
+    "Handler": "lambda/slack-interactions.handler",
+    "MemorySize": 512,
+    "Role": {
+     "Fn::GetAtt": [
+      "SlackInteractionsFunctionServiceRole71501F9D",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs18.x",
+    "Timeout": 30,
+    "VpcConfig": {
+     "SecurityGroupIds": [
+      {
+       "Fn::GetAtt": [
+        "SlackInteractionsFunctionSecurityGroup53F6469F",
+        "GroupId"
+       ]
+      }
+     ],
+     "SubnetIds": [
+      {
+       "Ref": "TimeLoggerVPCprivateSubnet1Subnet71D3A645"
+      },
+      {
+       "Ref": "TimeLoggerVPCprivateSubnet2Subnet6EE6A5D6"
+      }
+     ]
+    }
+   },
+   "DependsOn": [
+    "SlackInteractionsFunctionServiceRoleDefaultPolicy08B4306A",
+    "SlackInteractionsFunctionServiceRole71501F9D",
+    "TimeLoggerVPCprivateSubnet1DefaultRoute5F691A3D",
+    "TimeLoggerVPCprivateSubnet1RouteTableAssociationE16535BA",
+    "TimeLoggerVPCprivateSubnet2DefaultRoute5610ABA0",
+    "TimeLoggerVPCprivateSubnet2RouteTableAssociation4B6791F5"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/SlackInteractionsFunction/Resource",
+    "aws:asset:path": "asset.543f780cc2062944291d5ea5db87318327a05924328830f9152b23fbafc86d4a",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "SlackInteractionsFunctionLogRetention330C81B7": {
+   "Type": "Custom::LogRetention",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+      "Arn"
+     ]
+    },
+    "LogGroupName": {
+     "Fn::Join": [
+      "",
+      [
+       "/aws/lambda/",
+       {
+        "Ref": "SlackInteractionsFunctionE8D0C949"
+       }
+      ]
+     ]
+    },
+    "RetentionInDays": 7
+   },
+   "DependsOn": [
+    "TimeLoggerVPCprivateSubnet1DefaultRoute5F691A3D",
+    "TimeLoggerVPCprivateSubnet1RouteTableAssociationE16535BA",
+    "TimeLoggerVPCprivateSubnet2DefaultRoute5610ABA0",
+    "TimeLoggerVPCprivateSubnet2RouteTableAssociation4B6791F5"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/SlackInteractionsFunction/LogRetention/Resource"
+   }
+  },
+  "SlackCommandsFunctionServiceRole6BE30790": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     },
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "DependsOn": [
+    "TimeLoggerVPCprivateSubnet1DefaultRoute5F691A3D",
+    "TimeLoggerVPCprivateSubnet1RouteTableAssociationE16535BA",
+    "TimeLoggerVPCprivateSubnet2DefaultRoute5610ABA0",
+    "TimeLoggerVPCprivateSubnet2RouteTableAssociation4B6791F5"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/SlackCommandsFunction/ServiceRole/Resource"
+   }
+  },
+  "SlackCommandsFunctionServiceRoleDefaultPolicy94761AA8": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "secretsmanager:DescribeSecret",
+        "secretsmanager:GetSecretValue"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Ref": "AppSecretsA1997F2A"
+        },
+        {
+         "Ref": "AuroraSecret41E6E877"
+        }
+       ]
+      },
+      {
+       "Action": "secretsmanager:GetSecretValue",
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Ref": "AppSecretsA1997F2A"
+        },
+        {
+         "Ref": "AuroraSecret41E6E877"
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "SlackCommandsFunctionServiceRoleDefaultPolicy94761AA8",
+    "Roles": [
+     {
+      "Ref": "SlackCommandsFunctionServiceRole6BE30790"
+     }
+    ]
+   },
+   "DependsOn": [
+    "TimeLoggerVPCprivateSubnet1DefaultRoute5F691A3D",
+    "TimeLoggerVPCprivateSubnet1RouteTableAssociationE16535BA",
+    "TimeLoggerVPCprivateSubnet2DefaultRoute5610ABA0",
+    "TimeLoggerVPCprivateSubnet2RouteTableAssociation4B6791F5"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/SlackCommandsFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "SlackCommandsFunctionSecurityGroupE28E7B8A": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Automatic security group for Lambda Function TimeLoggerStackSlackCommandsFunction06C3B240",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "TimeLoggerVPC55752A33"
+    }
+   },
+   "DependsOn": [
+    "TimeLoggerVPCprivateSubnet1DefaultRoute5F691A3D",
+    "TimeLoggerVPCprivateSubnet1RouteTableAssociationE16535BA",
+    "TimeLoggerVPCprivateSubnet2DefaultRoute5610ABA0",
+    "TimeLoggerVPCprivateSubnet2RouteTableAssociation4B6791F5"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/SlackCommandsFunction/SecurityGroup/Resource"
+   }
+  },
+  "SlackCommandsFunctionE5E2271F": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-199279692978-ap-southeast-2",
+     "S3Key": "543f780cc2062944291d5ea5db87318327a05924328830f9152b23fbafc86d4a.zip"
+    },
+    "Description": "Handle Slack slash commands - Fixed v2025-07-07-NULL-CHECK",
+    "Environment": {
+     "Variables": {
+      "DB_SECRET_ARN": {
+       "Ref": "AuroraSecret41E6E877"
+      },
+      "APP_SECRETS_ARN": {
+       "Ref": "AppSecretsA1997F2A"
+      },
+      "NODE_ENV": "production",
+      "FORCE_REBUILD": "2025-07-09-01-15-00-FORCE-REFRESH-ALL-LAMBDAS"
+     }
+    },
+    "FunctionName": "timelogger-slack-commands",
+    "Handler": "lambda/slack-commands.handler",
+    "MemorySize": 512,
+    "Role": {
+     "Fn::GetAtt": [
+      "SlackCommandsFunctionServiceRole6BE30790",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs18.x",
+    "Timeout": 30,
+    "VpcConfig": {
+     "SecurityGroupIds": [
+      {
+       "Fn::GetAtt": [
+        "SlackCommandsFunctionSecurityGroupE28E7B8A",
+        "GroupId"
+       ]
+      }
+     ],
+     "SubnetIds": [
+      {
+       "Ref": "TimeLoggerVPCprivateSubnet1Subnet71D3A645"
+      },
+      {
+       "Ref": "TimeLoggerVPCprivateSubnet2Subnet6EE6A5D6"
+      }
+     ]
+    }
+   },
+   "DependsOn": [
+    "SlackCommandsFunctionServiceRoleDefaultPolicy94761AA8",
+    "SlackCommandsFunctionServiceRole6BE30790",
+    "TimeLoggerVPCprivateSubnet1DefaultRoute5F691A3D",
+    "TimeLoggerVPCprivateSubnet1RouteTableAssociationE16535BA",
+    "TimeLoggerVPCprivateSubnet2DefaultRoute5610ABA0",
+    "TimeLoggerVPCprivateSubnet2RouteTableAssociation4B6791F5"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/SlackCommandsFunction/Resource",
+    "aws:asset:path": "asset.543f780cc2062944291d5ea5db87318327a05924328830f9152b23fbafc86d4a",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "SlackCommandsFunctionLogRetention83507E46": {
+   "Type": "Custom::LogRetention",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+      "Arn"
+     ]
+    },
+    "LogGroupName": {
+     "Fn::Join": [
+      "",
+      [
+       "/aws/lambda/",
+       {
+        "Ref": "SlackCommandsFunctionE5E2271F"
+       }
+      ]
+     ]
+    },
+    "RetentionInDays": 7
+   },
+   "DependsOn": [
+    "TimeLoggerVPCprivateSubnet1DefaultRoute5F691A3D",
+    "TimeLoggerVPCprivateSubnet1RouteTableAssociationE16535BA",
+    "TimeLoggerVPCprivateSubnet2DefaultRoute5610ABA0",
+    "TimeLoggerVPCprivateSubnet2RouteTableAssociation4B6791F5"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/SlackCommandsFunction/LogRetention/Resource"
+   }
+  },
+  "HealthFunctionServiceRole04552894": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     },
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "DependsOn": [
+    "TimeLoggerVPCprivateSubnet1DefaultRoute5F691A3D",
+    "TimeLoggerVPCprivateSubnet1RouteTableAssociationE16535BA",
+    "TimeLoggerVPCprivateSubnet2DefaultRoute5610ABA0",
+    "TimeLoggerVPCprivateSubnet2RouteTableAssociation4B6791F5"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/HealthFunction/ServiceRole/Resource"
+   }
+  },
+  "HealthFunctionServiceRoleDefaultPolicy57228674": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "secretsmanager:DescribeSecret",
+        "secretsmanager:GetSecretValue"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Ref": "AppSecretsA1997F2A"
+        },
+        {
+         "Ref": "AuroraSecret41E6E877"
+        }
+       ]
+      },
+      {
+       "Action": "secretsmanager:GetSecretValue",
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Ref": "AppSecretsA1997F2A"
+        },
+        {
+         "Ref": "AuroraSecret41E6E877"
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "HealthFunctionServiceRoleDefaultPolicy57228674",
+    "Roles": [
+     {
+      "Ref": "HealthFunctionServiceRole04552894"
+     }
+    ]
+   },
+   "DependsOn": [
+    "TimeLoggerVPCprivateSubnet1DefaultRoute5F691A3D",
+    "TimeLoggerVPCprivateSubnet1RouteTableAssociationE16535BA",
+    "TimeLoggerVPCprivateSubnet2DefaultRoute5610ABA0",
+    "TimeLoggerVPCprivateSubnet2RouteTableAssociation4B6791F5"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/HealthFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "HealthFunctionSecurityGroupA0404FB6": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Automatic security group for Lambda Function TimeLoggerStackHealthFunction337AA772",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "TimeLoggerVPC55752A33"
+    }
+   },
+   "DependsOn": [
+    "TimeLoggerVPCprivateSubnet1DefaultRoute5F691A3D",
+    "TimeLoggerVPCprivateSubnet1RouteTableAssociationE16535BA",
+    "TimeLoggerVPCprivateSubnet2DefaultRoute5610ABA0",
+    "TimeLoggerVPCprivateSubnet2RouteTableAssociation4B6791F5"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/HealthFunction/SecurityGroup/Resource"
+   }
+  },
+  "HealthFunction19D7724A": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-199279692978-ap-southeast-2",
+     "S3Key": "543f780cc2062944291d5ea5db87318327a05924328830f9152b23fbafc86d4a.zip"
+    },
+    "Description": "Health check endpoint",
+    "Environment": {
+     "Variables": {
+      "DB_SECRET_ARN": {
+       "Ref": "AuroraSecret41E6E877"
+      },
+      "APP_SECRETS_ARN": {
+       "Ref": "AppSecretsA1997F2A"
+      },
+      "NODE_ENV": "production",
+      "FORCE_REBUILD": "2025-07-09-01-15-00-FORCE-REFRESH-ALL-LAMBDAS"
+     }
+    },
+    "FunctionName": "timelogger-health",
+    "Handler": "lambda/health.handler",
+    "MemorySize": 512,
+    "Role": {
+     "Fn::GetAtt": [
+      "HealthFunctionServiceRole04552894",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs18.x",
+    "Timeout": 30,
+    "VpcConfig": {
+     "SecurityGroupIds": [
+      {
+       "Fn::GetAtt": [
+        "HealthFunctionSecurityGroupA0404FB6",
+        "GroupId"
+       ]
+      }
+     ],
+     "SubnetIds": [
+      {
+       "Ref": "TimeLoggerVPCprivateSubnet1Subnet71D3A645"
+      },
+      {
+       "Ref": "TimeLoggerVPCprivateSubnet2Subnet6EE6A5D6"
+      }
+     ]
+    }
+   },
+   "DependsOn": [
+    "HealthFunctionServiceRoleDefaultPolicy57228674",
+    "HealthFunctionServiceRole04552894",
+    "TimeLoggerVPCprivateSubnet1DefaultRoute5F691A3D",
+    "TimeLoggerVPCprivateSubnet1RouteTableAssociationE16535BA",
+    "TimeLoggerVPCprivateSubnet2DefaultRoute5610ABA0",
+    "TimeLoggerVPCprivateSubnet2RouteTableAssociation4B6791F5"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/HealthFunction/Resource",
+    "aws:asset:path": "asset.543f780cc2062944291d5ea5db87318327a05924328830f9152b23fbafc86d4a",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "HealthFunctionLogRetentionC7891B18": {
+   "Type": "Custom::LogRetention",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+      "Arn"
+     ]
+    },
+    "LogGroupName": {
+     "Fn::Join": [
+      "",
+      [
+       "/aws/lambda/",
+       {
+        "Ref": "HealthFunction19D7724A"
+       }
+      ]
+     ]
+    },
+    "RetentionInDays": 7
+   },
+   "DependsOn": [
+    "TimeLoggerVPCprivateSubnet1DefaultRoute5F691A3D",
+    "TimeLoggerVPCprivateSubnet1RouteTableAssociationE16535BA",
+    "TimeLoggerVPCprivateSubnet2DefaultRoute5610ABA0",
+    "TimeLoggerVPCprivateSubnet2RouteTableAssociation4B6791F5"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/HealthFunction/LogRetention/Resource"
+   }
+  },
+  "MigrationFunctionServiceRole14DD1B1C": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     },
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "DependsOn": [
+    "TimeLoggerVPCprivateSubnet1DefaultRoute5F691A3D",
+    "TimeLoggerVPCprivateSubnet1RouteTableAssociationE16535BA",
+    "TimeLoggerVPCprivateSubnet2DefaultRoute5610ABA0",
+    "TimeLoggerVPCprivateSubnet2RouteTableAssociation4B6791F5"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/MigrationFunction/ServiceRole/Resource"
+   }
+  },
+  "MigrationFunctionServiceRoleDefaultPolicy280CFF3C": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "secretsmanager:DescribeSecret",
+        "secretsmanager:GetSecretValue"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Ref": "AppSecretsA1997F2A"
+        },
+        {
+         "Ref": "AuroraSecret41E6E877"
+        }
+       ]
+      },
+      {
+       "Action": "secretsmanager:GetSecretValue",
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Ref": "AppSecretsA1997F2A"
+        },
+        {
+         "Ref": "AuroraSecret41E6E877"
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "MigrationFunctionServiceRoleDefaultPolicy280CFF3C",
+    "Roles": [
+     {
+      "Ref": "MigrationFunctionServiceRole14DD1B1C"
+     }
+    ]
+   },
+   "DependsOn": [
+    "TimeLoggerVPCprivateSubnet1DefaultRoute5F691A3D",
+    "TimeLoggerVPCprivateSubnet1RouteTableAssociationE16535BA",
+    "TimeLoggerVPCprivateSubnet2DefaultRoute5610ABA0",
+    "TimeLoggerVPCprivateSubnet2RouteTableAssociation4B6791F5"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/MigrationFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "MigrationFunctionSecurityGroup81A9E498": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Automatic security group for Lambda Function TimeLoggerStackMigrationFunction26F079CF",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "TimeLoggerVPC55752A33"
+    }
+   },
+   "DependsOn": [
+    "TimeLoggerVPCprivateSubnet1DefaultRoute5F691A3D",
+    "TimeLoggerVPCprivateSubnet1RouteTableAssociationE16535BA",
+    "TimeLoggerVPCprivateSubnet2DefaultRoute5610ABA0",
+    "TimeLoggerVPCprivateSubnet2RouteTableAssociation4B6791F5"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/MigrationFunction/SecurityGroup/Resource"
+   }
+  },
+  "MigrationFunction1060F2E0": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-199279692978-ap-southeast-2",
+     "S3Key": "543f780cc2062944291d5ea5db87318327a05924328830f9152b23fbafc86d4a.zip"
+    },
+    "Description": "Database migration and setup",
+    "Environment": {
+     "Variables": {
+      "DB_SECRET_ARN": {
+       "Ref": "AuroraSecret41E6E877"
+      },
+      "APP_SECRETS_ARN": {
+       "Ref": "AppSecretsA1997F2A"
+      },
+      "NODE_ENV": "production",
+      "FORCE_REBUILD": "2025-07-09-01-15-00-FORCE-REFRESH-ALL-LAMBDAS"
+     }
+    },
+    "FunctionName": "timelogger-migration",
+    "Handler": "lambda/migration.handler",
+    "MemorySize": 512,
+    "Role": {
+     "Fn::GetAtt": [
+      "MigrationFunctionServiceRole14DD1B1C",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs18.x",
+    "Timeout": 300,
+    "VpcConfig": {
+     "SecurityGroupIds": [
+      {
+       "Fn::GetAtt": [
+        "MigrationFunctionSecurityGroup81A9E498",
+        "GroupId"
+       ]
+      }
+     ],
+     "SubnetIds": [
+      {
+       "Ref": "TimeLoggerVPCprivateSubnet1Subnet71D3A645"
+      },
+      {
+       "Ref": "TimeLoggerVPCprivateSubnet2Subnet6EE6A5D6"
+      }
+     ]
+    }
+   },
+   "DependsOn": [
+    "MigrationFunctionServiceRoleDefaultPolicy280CFF3C",
+    "MigrationFunctionServiceRole14DD1B1C",
+    "TimeLoggerVPCprivateSubnet1DefaultRoute5F691A3D",
+    "TimeLoggerVPCprivateSubnet1RouteTableAssociationE16535BA",
+    "TimeLoggerVPCprivateSubnet2DefaultRoute5610ABA0",
+    "TimeLoggerVPCprivateSubnet2RouteTableAssociation4B6791F5"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/MigrationFunction/Resource",
+    "aws:asset:path": "asset.543f780cc2062944291d5ea5db87318327a05924328830f9152b23fbafc86d4a",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "MigrationFunctionLogRetention97E21693": {
+   "Type": "Custom::LogRetention",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+      "Arn"
+     ]
+    },
+    "LogGroupName": {
+     "Fn::Join": [
+      "",
+      [
+       "/aws/lambda/",
+       {
+        "Ref": "MigrationFunction1060F2E0"
+       }
+      ]
+     ]
+    },
+    "RetentionInDays": 7
+   },
+   "DependsOn": [
+    "TimeLoggerVPCprivateSubnet1DefaultRoute5F691A3D",
+    "TimeLoggerVPCprivateSubnet1RouteTableAssociationE16535BA",
+    "TimeLoggerVPCprivateSubnet2DefaultRoute5610ABA0",
+    "TimeLoggerVPCprivateSubnet2RouteTableAssociation4B6791F5"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/MigrationFunction/LogRetention/Resource"
+   }
+  },
+  "FixPermissionsFunctionServiceRole2552DB11": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     },
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "DependsOn": [
+    "TimeLoggerVPCprivateSubnet1DefaultRoute5F691A3D",
+    "TimeLoggerVPCprivateSubnet1RouteTableAssociationE16535BA",
+    "TimeLoggerVPCprivateSubnet2DefaultRoute5610ABA0",
+    "TimeLoggerVPCprivateSubnet2RouteTableAssociation4B6791F5"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/FixPermissionsFunction/ServiceRole/Resource"
+   }
+  },
+  "FixPermissionsFunctionServiceRoleDefaultPolicy2DEF44EF": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "secretsmanager:DescribeSecret",
+        "secretsmanager:GetSecretValue"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Ref": "AppSecretsA1997F2A"
+        },
+        {
+         "Ref": "AuroraSecret41E6E877"
+        }
+       ]
+      },
+      {
+       "Action": "secretsmanager:GetSecretValue",
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Ref": "AppSecretsA1997F2A"
+        },
+        {
+         "Ref": "AuroraSecret41E6E877"
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "FixPermissionsFunctionServiceRoleDefaultPolicy2DEF44EF",
+    "Roles": [
+     {
+      "Ref": "FixPermissionsFunctionServiceRole2552DB11"
+     }
+    ]
+   },
+   "DependsOn": [
+    "TimeLoggerVPCprivateSubnet1DefaultRoute5F691A3D",
+    "TimeLoggerVPCprivateSubnet1RouteTableAssociationE16535BA",
+    "TimeLoggerVPCprivateSubnet2DefaultRoute5610ABA0",
+    "TimeLoggerVPCprivateSubnet2RouteTableAssociation4B6791F5"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/FixPermissionsFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "FixPermissionsFunctionSecurityGroupEAEBCE60": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Automatic security group for Lambda Function TimeLoggerStackFixPermissionsFunctionF93B9DEC",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "TimeLoggerVPC55752A33"
+    }
+   },
+   "DependsOn": [
+    "TimeLoggerVPCprivateSubnet1DefaultRoute5F691A3D",
+    "TimeLoggerVPCprivateSubnet1RouteTableAssociationE16535BA",
+    "TimeLoggerVPCprivateSubnet2DefaultRoute5610ABA0",
+    "TimeLoggerVPCprivateSubnet2RouteTableAssociation4B6791F5"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/FixPermissionsFunction/SecurityGroup/Resource"
+   }
+  },
+  "FixPermissionsFunction42875A1B": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-199279692978-ap-southeast-2",
+     "S3Key": "543f780cc2062944291d5ea5db87318327a05924328830f9152b23fbafc86d4a.zip"
+    },
+    "Description": "Fix Aurora database permissions for timelogger_admin user",
+    "Environment": {
+     "Variables": {
+      "DB_SECRET_ARN": {
+       "Ref": "AuroraSecret41E6E877"
+      },
+      "APP_SECRETS_ARN": {
+       "Ref": "AppSecretsA1997F2A"
+      },
+      "NODE_ENV": "production",
+      "FORCE_REBUILD": "2025-07-09-01-15-00-FORCE-REFRESH-ALL-LAMBDAS"
+     }
+    },
+    "FunctionName": "timelogger-fix-permissions",
+    "Handler": "lambda/fix-permissions.handler",
+    "MemorySize": 512,
+    "Role": {
+     "Fn::GetAtt": [
+      "FixPermissionsFunctionServiceRole2552DB11",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs18.x",
+    "Timeout": 600,
+    "VpcConfig": {
+     "SecurityGroupIds": [
+      {
+       "Fn::GetAtt": [
+        "FixPermissionsFunctionSecurityGroupEAEBCE60",
+        "GroupId"
+       ]
+      }
+     ],
+     "SubnetIds": [
+      {
+       "Ref": "TimeLoggerVPCprivateSubnet1Subnet71D3A645"
+      },
+      {
+       "Ref": "TimeLoggerVPCprivateSubnet2Subnet6EE6A5D6"
+      }
+     ]
+    }
+   },
+   "DependsOn": [
+    "FixPermissionsFunctionServiceRoleDefaultPolicy2DEF44EF",
+    "FixPermissionsFunctionServiceRole2552DB11",
+    "TimeLoggerVPCprivateSubnet1DefaultRoute5F691A3D",
+    "TimeLoggerVPCprivateSubnet1RouteTableAssociationE16535BA",
+    "TimeLoggerVPCprivateSubnet2DefaultRoute5610ABA0",
+    "TimeLoggerVPCprivateSubnet2RouteTableAssociation4B6791F5"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/FixPermissionsFunction/Resource",
+    "aws:asset:path": "asset.543f780cc2062944291d5ea5db87318327a05924328830f9152b23fbafc86d4a",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "FixPermissionsFunctionLogRetention08510A3A": {
+   "Type": "Custom::LogRetention",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+      "Arn"
+     ]
+    },
+    "LogGroupName": {
+     "Fn::Join": [
+      "",
+      [
+       "/aws/lambda/",
+       {
+        "Ref": "FixPermissionsFunction42875A1B"
+       }
+      ]
+     ]
+    },
+    "RetentionInDays": 7
+   },
+   "DependsOn": [
+    "TimeLoggerVPCprivateSubnet1DefaultRoute5F691A3D",
+    "TimeLoggerVPCprivateSubnet1RouteTableAssociationE16535BA",
+    "TimeLoggerVPCprivateSubnet2DefaultRoute5610ABA0",
+    "TimeLoggerVPCprivateSubnet2RouteTableAssociation4B6791F5"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/FixPermissionsFunction/LogRetention/Resource"
+   }
+  },
+  "DebugVersionFunctionServiceRole62435101": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     },
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "DependsOn": [
+    "TimeLoggerVPCprivateSubnet1DefaultRoute5F691A3D",
+    "TimeLoggerVPCprivateSubnet1RouteTableAssociationE16535BA",
+    "TimeLoggerVPCprivateSubnet2DefaultRoute5610ABA0",
+    "TimeLoggerVPCprivateSubnet2RouteTableAssociation4B6791F5"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/DebugVersionFunction/ServiceRole/Resource"
+   }
+  },
+  "DebugVersionFunctionServiceRoleDefaultPolicyD5B52C29": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "secretsmanager:DescribeSecret",
+        "secretsmanager:GetSecretValue"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Ref": "AppSecretsA1997F2A"
+        },
+        {
+         "Ref": "AuroraSecret41E6E877"
+        }
+       ]
+      },
+      {
+       "Action": "secretsmanager:GetSecretValue",
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Ref": "AppSecretsA1997F2A"
+        },
+        {
+         "Ref": "AuroraSecret41E6E877"
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "DebugVersionFunctionServiceRoleDefaultPolicyD5B52C29",
+    "Roles": [
+     {
+      "Ref": "DebugVersionFunctionServiceRole62435101"
+     }
+    ]
+   },
+   "DependsOn": [
+    "TimeLoggerVPCprivateSubnet1DefaultRoute5F691A3D",
+    "TimeLoggerVPCprivateSubnet1RouteTableAssociationE16535BA",
+    "TimeLoggerVPCprivateSubnet2DefaultRoute5610ABA0",
+    "TimeLoggerVPCprivateSubnet2RouteTableAssociation4B6791F5"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/DebugVersionFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "DebugVersionFunctionSecurityGroup815D530A": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Automatic security group for Lambda Function TimeLoggerStackDebugVersionFunction027CC568",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "TimeLoggerVPC55752A33"
+    }
+   },
+   "DependsOn": [
+    "TimeLoggerVPCprivateSubnet1DefaultRoute5F691A3D",
+    "TimeLoggerVPCprivateSubnet1RouteTableAssociationE16535BA",
+    "TimeLoggerVPCprivateSubnet2DefaultRoute5610ABA0",
+    "TimeLoggerVPCprivateSubnet2RouteTableAssociation4B6791F5"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/DebugVersionFunction/SecurityGroup/Resource"
+   }
+  },
+  "DebugVersionFunction3C760E44": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-199279692978-ap-southeast-2",
+     "S3Key": "543f780cc2062944291d5ea5db87318327a05924328830f9152b23fbafc86d4a.zip"
+    },
+    "Description": "Debug endpoint to check code version",
+    "Environment": {
+     "Variables": {
+      "DB_SECRET_ARN": {
+       "Ref": "AuroraSecret41E6E877"
+      },
+      "APP_SECRETS_ARN": {
+       "Ref": "AppSecretsA1997F2A"
+      },
+      "NODE_ENV": "production",
+      "FORCE_REBUILD": "2025-07-09-01-15-00-FORCE-REFRESH-ALL-LAMBDAS"
+     }
+    },
+    "FunctionName": "timelogger-debug-version",
+    "Handler": "lambda/debug-version.handler",
+    "MemorySize": 512,
+    "Role": {
+     "Fn::GetAtt": [
+      "DebugVersionFunctionServiceRole62435101",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs18.x",
+    "Timeout": 30,
+    "VpcConfig": {
+     "SecurityGroupIds": [
+      {
+       "Fn::GetAtt": [
+        "DebugVersionFunctionSecurityGroup815D530A",
+        "GroupId"
+       ]
+      }
+     ],
+     "SubnetIds": [
+      {
+       "Ref": "TimeLoggerVPCprivateSubnet1Subnet71D3A645"
+      },
+      {
+       "Ref": "TimeLoggerVPCprivateSubnet2Subnet6EE6A5D6"
+      }
+     ]
+    }
+   },
+   "DependsOn": [
+    "DebugVersionFunctionServiceRoleDefaultPolicyD5B52C29",
+    "DebugVersionFunctionServiceRole62435101",
+    "TimeLoggerVPCprivateSubnet1DefaultRoute5F691A3D",
+    "TimeLoggerVPCprivateSubnet1RouteTableAssociationE16535BA",
+    "TimeLoggerVPCprivateSubnet2DefaultRoute5610ABA0",
+    "TimeLoggerVPCprivateSubnet2RouteTableAssociation4B6791F5"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/DebugVersionFunction/Resource",
+    "aws:asset:path": "asset.543f780cc2062944291d5ea5db87318327a05924328830f9152b23fbafc86d4a",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "DebugVersionFunctionLogRetentionD5F43144": {
+   "Type": "Custom::LogRetention",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+      "Arn"
+     ]
+    },
+    "LogGroupName": {
+     "Fn::Join": [
+      "",
+      [
+       "/aws/lambda/",
+       {
+        "Ref": "DebugVersionFunction3C760E44"
+       }
+      ]
+     ]
+    },
+    "RetentionInDays": 7
+   },
+   "DependsOn": [
+    "TimeLoggerVPCprivateSubnet1DefaultRoute5F691A3D",
+    "TimeLoggerVPCprivateSubnet1RouteTableAssociationE16535BA",
+    "TimeLoggerVPCprivateSubnet2DefaultRoute5610ABA0",
+    "TimeLoggerVPCprivateSubnet2RouteTableAssociation4B6791F5"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/DebugVersionFunction/LogRetention/Resource"
+   }
+  },
+  "TimeLoggerAPIB7D1F046": {
+   "Type": "AWS::ApiGateway::RestApi",
+   "Properties": {
+    "Description": "API Gateway for TimeLogger Slack bot webhooks",
+    "Name": "TimeLogger Slack Bot API"
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerAPI/Resource"
+   }
+  },
+  "TimeLoggerAPICloudWatchRoleDCC01175": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "apigateway.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
+       ]
+      ]
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerAPI/CloudWatchRole/Resource"
+   }
+  },
+  "TimeLoggerAPIAccount30880F67": {
+   "Type": "AWS::ApiGateway::Account",
+   "Properties": {
+    "CloudWatchRoleArn": {
+     "Fn::GetAtt": [
+      "TimeLoggerAPICloudWatchRoleDCC01175",
+      "Arn"
+     ]
+    }
+   },
+   "DependsOn": [
+    "TimeLoggerAPIB7D1F046"
+   ],
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerAPI/Account"
+   }
+  },
+  "TimeLoggerAPIDeployment7CBB09283ff5efbeeaaf366dc18ff46130f1d466": {
+   "Type": "AWS::ApiGateway::Deployment",
+   "Properties": {
+    "Description": "API Gateway for TimeLogger Slack bot webhooks",
+    "RestApiId": {
+     "Ref": "TimeLoggerAPIB7D1F046"
+    }
+   },
+   "DependsOn": [
+    "TimeLoggerAPIdebugversionGETCDD09BDE",
+    "TimeLoggerAPIdebugversionOPTIONS134623BC",
+    "TimeLoggerAPIdebugversion043EE655",
+    "TimeLoggerAPIfixpermissionsOPTIONS99D96CAF",
+    "TimeLoggerAPIfixpermissionsPOST8924A804",
+    "TimeLoggerAPIfixpermissionsEFDBF2A5",
+    "TimeLoggerAPIhealthGETA4A7687D",
+    "TimeLoggerAPIhealthOPTIONSCC8E9D6E",
+    "TimeLoggerAPIhealth28D754A9",
+    "TimeLoggerAPImigrationOPTIONSD66D2C3C",
+    "TimeLoggerAPImigrationPOSTDD90FCFA",
+    "TimeLoggerAPImigration88894E4A",
+    "TimeLoggerAPIOPTIONS4B160C29",
+    "TimeLoggerAPIslackcommandsOPTIONSBEDEF5A2",
+    "TimeLoggerAPIslackcommandsPOST1AE62FCA",
+    "TimeLoggerAPIslackcommands4B53098E",
+    "TimeLoggerAPIslackeventsOPTIONS0863A0DE",
+    "TimeLoggerAPIslackeventsPOST59A240D6",
+    "TimeLoggerAPIslackeventsE4D7D811",
+    "TimeLoggerAPIslackinteractionsOPTIONSC6008D36",
+    "TimeLoggerAPIslackinteractionsPOSTF473AFA8",
+    "TimeLoggerAPIslackinteractions2688B0B5",
+    "TimeLoggerAPIslackOPTIONSEE5E308B",
+    "TimeLoggerAPIslack8CA74833"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerAPI/Deployment/Resource",
+    "aws:cdk:do-not-refactor": true
+   }
+  },
+  "TimeLoggerAPIDeploymentStageprod389B0C07": {
+   "Type": "AWS::ApiGateway::Stage",
+   "Properties": {
+    "DeploymentId": {
+     "Ref": "TimeLoggerAPIDeployment7CBB09283ff5efbeeaaf366dc18ff46130f1d466"
+    },
+    "RestApiId": {
+     "Ref": "TimeLoggerAPIB7D1F046"
+    },
+    "StageName": "prod"
+   },
+   "DependsOn": [
+    "TimeLoggerAPIAccount30880F67"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerAPI/DeploymentStage.prod/Resource"
+   }
+  },
+  "TimeLoggerAPIOPTIONS4B160C29": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Fn::GetAtt": [
+      "TimeLoggerAPIB7D1F046",
+      "RootResourceId"
+     ]
+    },
+    "RestApiId": {
+     "Ref": "TimeLoggerAPIB7D1F046"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerAPI/Default/OPTIONS/Resource"
+   }
+  },
+  "TimeLoggerAPIslack8CA74833": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "TimeLoggerAPIB7D1F046",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "slack",
+    "RestApiId": {
+     "Ref": "TimeLoggerAPIB7D1F046"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerAPI/Default/slack/Resource"
+   }
+  },
+  "TimeLoggerAPIslackOPTIONSEE5E308B": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "TimeLoggerAPIslack8CA74833"
+    },
+    "RestApiId": {
+     "Ref": "TimeLoggerAPIB7D1F046"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerAPI/Default/slack/OPTIONS/Resource"
+   }
+  },
+  "TimeLoggerAPIslackeventsE4D7D811": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "TimeLoggerAPIslack8CA74833"
+    },
+    "PathPart": "events",
+    "RestApiId": {
+     "Ref": "TimeLoggerAPIB7D1F046"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerAPI/Default/slack/events/Resource"
+   }
+  },
+  "TimeLoggerAPIslackeventsOPTIONS0863A0DE": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "TimeLoggerAPIslackeventsE4D7D811"
+    },
+    "RestApiId": {
+     "Ref": "TimeLoggerAPIB7D1F046"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerAPI/Default/slack/events/OPTIONS/Resource"
+   }
+  },
+  "TimeLoggerAPIslackeventsPOSTApiPermissionTimeLoggerStackTimeLoggerAPID4A2EA75POSTslackevents91EC2BC4": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "SlackEventsFunctionAC08BCF7",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-southeast-2:199279692978:",
+       {
+        "Ref": "TimeLoggerAPIB7D1F046"
+       },
+       "/",
+       {
+        "Ref": "TimeLoggerAPIDeploymentStageprod389B0C07"
+       },
+       "/POST/slack/events"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerAPI/Default/slack/events/POST/ApiPermission.TimeLoggerStackTimeLoggerAPID4A2EA75.POST..slack.events"
+   }
+  },
+  "TimeLoggerAPIslackeventsPOSTApiPermissionTestTimeLoggerStackTimeLoggerAPID4A2EA75POSTslackeventsD30DFB05": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "SlackEventsFunctionAC08BCF7",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-southeast-2:199279692978:",
+       {
+        "Ref": "TimeLoggerAPIB7D1F046"
+       },
+       "/test-invoke-stage/POST/slack/events"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerAPI/Default/slack/events/POST/ApiPermission.Test.TimeLoggerStackTimeLoggerAPID4A2EA75.POST..slack.events"
+   }
+  },
+  "TimeLoggerAPIslackeventsPOST59A240D6": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:ap-southeast-2:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "SlackEventsFunctionAC08BCF7",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "TimeLoggerAPIslackeventsE4D7D811"
+    },
+    "RestApiId": {
+     "Ref": "TimeLoggerAPIB7D1F046"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerAPI/Default/slack/events/POST/Resource"
+   }
+  },
+  "TimeLoggerAPIslackinteractions2688B0B5": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "TimeLoggerAPIslack8CA74833"
+    },
+    "PathPart": "interactions",
+    "RestApiId": {
+     "Ref": "TimeLoggerAPIB7D1F046"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerAPI/Default/slack/interactions/Resource"
+   }
+  },
+  "TimeLoggerAPIslackinteractionsOPTIONSC6008D36": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "TimeLoggerAPIslackinteractions2688B0B5"
+    },
+    "RestApiId": {
+     "Ref": "TimeLoggerAPIB7D1F046"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerAPI/Default/slack/interactions/OPTIONS/Resource"
+   }
+  },
+  "TimeLoggerAPIslackinteractionsPOSTApiPermissionTimeLoggerStackTimeLoggerAPID4A2EA75POSTslackinteractionsB3AD21EE": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "SlackInteractionsFunctionE8D0C949",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-southeast-2:199279692978:",
+       {
+        "Ref": "TimeLoggerAPIB7D1F046"
+       },
+       "/",
+       {
+        "Ref": "TimeLoggerAPIDeploymentStageprod389B0C07"
+       },
+       "/POST/slack/interactions"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerAPI/Default/slack/interactions/POST/ApiPermission.TimeLoggerStackTimeLoggerAPID4A2EA75.POST..slack.interactions"
+   }
+  },
+  "TimeLoggerAPIslackinteractionsPOSTApiPermissionTestTimeLoggerStackTimeLoggerAPID4A2EA75POSTslackinteractions509EFD02": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "SlackInteractionsFunctionE8D0C949",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-southeast-2:199279692978:",
+       {
+        "Ref": "TimeLoggerAPIB7D1F046"
+       },
+       "/test-invoke-stage/POST/slack/interactions"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerAPI/Default/slack/interactions/POST/ApiPermission.Test.TimeLoggerStackTimeLoggerAPID4A2EA75.POST..slack.interactions"
+   }
+  },
+  "TimeLoggerAPIslackinteractionsPOSTF473AFA8": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:ap-southeast-2:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "SlackInteractionsFunctionE8D0C949",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "TimeLoggerAPIslackinteractions2688B0B5"
+    },
+    "RestApiId": {
+     "Ref": "TimeLoggerAPIB7D1F046"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerAPI/Default/slack/interactions/POST/Resource"
+   }
+  },
+  "TimeLoggerAPIslackcommands4B53098E": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "TimeLoggerAPIslack8CA74833"
+    },
+    "PathPart": "commands",
+    "RestApiId": {
+     "Ref": "TimeLoggerAPIB7D1F046"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerAPI/Default/slack/commands/Resource"
+   }
+  },
+  "TimeLoggerAPIslackcommandsOPTIONSBEDEF5A2": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "TimeLoggerAPIslackcommands4B53098E"
+    },
+    "RestApiId": {
+     "Ref": "TimeLoggerAPIB7D1F046"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerAPI/Default/slack/commands/OPTIONS/Resource"
+   }
+  },
+  "TimeLoggerAPIslackcommandsPOSTApiPermissionTimeLoggerStackTimeLoggerAPID4A2EA75POSTslackcommands3D403EDA": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "SlackCommandsFunctionE5E2271F",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-southeast-2:199279692978:",
+       {
+        "Ref": "TimeLoggerAPIB7D1F046"
+       },
+       "/",
+       {
+        "Ref": "TimeLoggerAPIDeploymentStageprod389B0C07"
+       },
+       "/POST/slack/commands"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerAPI/Default/slack/commands/POST/ApiPermission.TimeLoggerStackTimeLoggerAPID4A2EA75.POST..slack.commands"
+   }
+  },
+  "TimeLoggerAPIslackcommandsPOSTApiPermissionTestTimeLoggerStackTimeLoggerAPID4A2EA75POSTslackcommandsE4080AE2": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "SlackCommandsFunctionE5E2271F",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-southeast-2:199279692978:",
+       {
+        "Ref": "TimeLoggerAPIB7D1F046"
+       },
+       "/test-invoke-stage/POST/slack/commands"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerAPI/Default/slack/commands/POST/ApiPermission.Test.TimeLoggerStackTimeLoggerAPID4A2EA75.POST..slack.commands"
+   }
+  },
+  "TimeLoggerAPIslackcommandsPOST1AE62FCA": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:ap-southeast-2:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "SlackCommandsFunctionE5E2271F",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "TimeLoggerAPIslackcommands4B53098E"
+    },
+    "RestApiId": {
+     "Ref": "TimeLoggerAPIB7D1F046"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerAPI/Default/slack/commands/POST/Resource"
+   }
+  },
+  "TimeLoggerAPIhealth28D754A9": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "TimeLoggerAPIB7D1F046",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "health",
+    "RestApiId": {
+     "Ref": "TimeLoggerAPIB7D1F046"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerAPI/Default/health/Resource"
+   }
+  },
+  "TimeLoggerAPIhealthOPTIONSCC8E9D6E": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "TimeLoggerAPIhealth28D754A9"
+    },
+    "RestApiId": {
+     "Ref": "TimeLoggerAPIB7D1F046"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerAPI/Default/health/OPTIONS/Resource"
+   }
+  },
+  "TimeLoggerAPIhealthGETApiPermissionTimeLoggerStackTimeLoggerAPID4A2EA75GEThealthB1A88F7A": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "HealthFunction19D7724A",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-southeast-2:199279692978:",
+       {
+        "Ref": "TimeLoggerAPIB7D1F046"
+       },
+       "/",
+       {
+        "Ref": "TimeLoggerAPIDeploymentStageprod389B0C07"
+       },
+       "/GET/health"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerAPI/Default/health/GET/ApiPermission.TimeLoggerStackTimeLoggerAPID4A2EA75.GET..health"
+   }
+  },
+  "TimeLoggerAPIhealthGETApiPermissionTestTimeLoggerStackTimeLoggerAPID4A2EA75GEThealthCC1F09A0": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "HealthFunction19D7724A",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-southeast-2:199279692978:",
+       {
+        "Ref": "TimeLoggerAPIB7D1F046"
+       },
+       "/test-invoke-stage/GET/health"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerAPI/Default/health/GET/ApiPermission.Test.TimeLoggerStackTimeLoggerAPID4A2EA75.GET..health"
+   }
+  },
+  "TimeLoggerAPIhealthGETA4A7687D": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "GET",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:ap-southeast-2:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "HealthFunction19D7724A",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "TimeLoggerAPIhealth28D754A9"
+    },
+    "RestApiId": {
+     "Ref": "TimeLoggerAPIB7D1F046"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerAPI/Default/health/GET/Resource"
+   }
+  },
+  "TimeLoggerAPImigration88894E4A": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "TimeLoggerAPIB7D1F046",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "migration",
+    "RestApiId": {
+     "Ref": "TimeLoggerAPIB7D1F046"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerAPI/Default/migration/Resource"
+   }
+  },
+  "TimeLoggerAPImigrationOPTIONSD66D2C3C": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "TimeLoggerAPImigration88894E4A"
+    },
+    "RestApiId": {
+     "Ref": "TimeLoggerAPIB7D1F046"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerAPI/Default/migration/OPTIONS/Resource"
+   }
+  },
+  "TimeLoggerAPImigrationPOSTApiPermissionTimeLoggerStackTimeLoggerAPID4A2EA75POSTmigrationB7E3954C": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "MigrationFunction1060F2E0",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-southeast-2:199279692978:",
+       {
+        "Ref": "TimeLoggerAPIB7D1F046"
+       },
+       "/",
+       {
+        "Ref": "TimeLoggerAPIDeploymentStageprod389B0C07"
+       },
+       "/POST/migration"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerAPI/Default/migration/POST/ApiPermission.TimeLoggerStackTimeLoggerAPID4A2EA75.POST..migration"
+   }
+  },
+  "TimeLoggerAPImigrationPOSTApiPermissionTestTimeLoggerStackTimeLoggerAPID4A2EA75POSTmigration8B61BF71": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "MigrationFunction1060F2E0",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-southeast-2:199279692978:",
+       {
+        "Ref": "TimeLoggerAPIB7D1F046"
+       },
+       "/test-invoke-stage/POST/migration"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerAPI/Default/migration/POST/ApiPermission.Test.TimeLoggerStackTimeLoggerAPID4A2EA75.POST..migration"
+   }
+  },
+  "TimeLoggerAPImigrationPOSTDD90FCFA": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:ap-southeast-2:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "MigrationFunction1060F2E0",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "TimeLoggerAPImigration88894E4A"
+    },
+    "RestApiId": {
+     "Ref": "TimeLoggerAPIB7D1F046"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerAPI/Default/migration/POST/Resource"
+   }
+  },
+  "TimeLoggerAPIfixpermissionsEFDBF2A5": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "TimeLoggerAPIB7D1F046",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "fix-permissions",
+    "RestApiId": {
+     "Ref": "TimeLoggerAPIB7D1F046"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerAPI/Default/fix-permissions/Resource"
+   }
+  },
+  "TimeLoggerAPIfixpermissionsOPTIONS99D96CAF": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "TimeLoggerAPIfixpermissionsEFDBF2A5"
+    },
+    "RestApiId": {
+     "Ref": "TimeLoggerAPIB7D1F046"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerAPI/Default/fix-permissions/OPTIONS/Resource"
+   }
+  },
+  "TimeLoggerAPIfixpermissionsPOSTApiPermissionTimeLoggerStackTimeLoggerAPID4A2EA75POSTfixpermissionsB2D2A642": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "FixPermissionsFunction42875A1B",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-southeast-2:199279692978:",
+       {
+        "Ref": "TimeLoggerAPIB7D1F046"
+       },
+       "/",
+       {
+        "Ref": "TimeLoggerAPIDeploymentStageprod389B0C07"
+       },
+       "/POST/fix-permissions"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerAPI/Default/fix-permissions/POST/ApiPermission.TimeLoggerStackTimeLoggerAPID4A2EA75.POST..fix-permissions"
+   }
+  },
+  "TimeLoggerAPIfixpermissionsPOSTApiPermissionTestTimeLoggerStackTimeLoggerAPID4A2EA75POSTfixpermissionsEB6F319F": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "FixPermissionsFunction42875A1B",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-southeast-2:199279692978:",
+       {
+        "Ref": "TimeLoggerAPIB7D1F046"
+       },
+       "/test-invoke-stage/POST/fix-permissions"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerAPI/Default/fix-permissions/POST/ApiPermission.Test.TimeLoggerStackTimeLoggerAPID4A2EA75.POST..fix-permissions"
+   }
+  },
+  "TimeLoggerAPIfixpermissionsPOST8924A804": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:ap-southeast-2:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "FixPermissionsFunction42875A1B",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "TimeLoggerAPIfixpermissionsEFDBF2A5"
+    },
+    "RestApiId": {
+     "Ref": "TimeLoggerAPIB7D1F046"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerAPI/Default/fix-permissions/POST/Resource"
+   }
+  },
+  "TimeLoggerAPIdebugversion043EE655": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "TimeLoggerAPIB7D1F046",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "debug-version",
+    "RestApiId": {
+     "Ref": "TimeLoggerAPIB7D1F046"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerAPI/Default/debug-version/Resource"
+   }
+  },
+  "TimeLoggerAPIdebugversionOPTIONS134623BC": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "TimeLoggerAPIdebugversion043EE655"
+    },
+    "RestApiId": {
+     "Ref": "TimeLoggerAPIB7D1F046"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerAPI/Default/debug-version/OPTIONS/Resource"
+   }
+  },
+  "TimeLoggerAPIdebugversionGETApiPermissionTimeLoggerStackTimeLoggerAPID4A2EA75GETdebugversion4B3CB033": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "DebugVersionFunction3C760E44",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-southeast-2:199279692978:",
+       {
+        "Ref": "TimeLoggerAPIB7D1F046"
+       },
+       "/",
+       {
+        "Ref": "TimeLoggerAPIDeploymentStageprod389B0C07"
+       },
+       "/GET/debug-version"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerAPI/Default/debug-version/GET/ApiPermission.TimeLoggerStackTimeLoggerAPID4A2EA75.GET..debug-version"
+   }
+  },
+  "TimeLoggerAPIdebugversionGETApiPermissionTestTimeLoggerStackTimeLoggerAPID4A2EA75GETdebugversion601D63B6": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "DebugVersionFunction3C760E44",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-southeast-2:199279692978:",
+       {
+        "Ref": "TimeLoggerAPIB7D1F046"
+       },
+       "/test-invoke-stage/GET/debug-version"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerAPI/Default/debug-version/GET/ApiPermission.Test.TimeLoggerStackTimeLoggerAPID4A2EA75.GET..debug-version"
+   }
+  },
+  "TimeLoggerAPIdebugversionGETCDD09BDE": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "GET",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:ap-southeast-2:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "DebugVersionFunction3C760E44",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "TimeLoggerAPIdebugversion043EE655"
+    },
+    "RestApiId": {
+     "Ref": "TimeLoggerAPIB7D1F046"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/TimeLoggerAPI/Default/debug-version/GET/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/31STW/bMAz9Lb0rWubusmM+1iLAPoyk6LWgZc5VY0uGSKUIDP/30XIcB92wEx8fKZKPVKaz5Re9vIN3WpjyuKhtobsDgzkqoV46NJnunlujNr/dc75ReSxqaw6xcMgDN6O9j4xPUNQ48zO3IvLGAlvvrskD+LbLB/MT+BEY3+Gs8mBPAufCO8cYBE8J4yQXb8Uy62uDjtUBTQyWz4/BxzbN8F9i56qARL0iNAGZGnBQYRD1yb/kD2g0TxAq5Jt+14SPkV6FknS3BYYCCDd1JFGgRkXXYbbrv4gpMzk7RwzOYK9qaIoSdPcQnZkWeItzDI0lEq9XFhrd7f14hGRzLwdLWxuRCL5/ASKRrFeDEV+vozkir2VaVfuK9Hdf7ZFFy9ACWluN25bSSLxqbao+w5UxPspKttjW/jxt58aTH1WN/yIBeepjMJga/kB+9eUQvKApemmScN/f0LIl3/wr60MoD/5kSwypTdI6tLeuGt78itxGuZXzJeo3+nTKlvrzV53dvZG1iyBybIN6P9o/fksAEScDAAA="
+   },
+   "Metadata": {
+    "aws:cdk:path": "TimeLoggerStack/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "TimeLoggerAPIEndpointF06C7E15": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "TimeLoggerAPIB7D1F046"
+      },
+      ".execute-api.ap-southeast-2.",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "TimeLoggerAPIDeploymentStageprod389B0C07"
+      },
+      "/"
+     ]
+    ]
+   }
+  },
+  "DatabaseEndpoint": {
+   "Description": "Aurora PostgreSQL cluster endpoint",
+   "Value": {
+    "Fn::GetAtt": [
+     "AuroraCluster23D869C0",
+     "Endpoint.Address"
+    ]
+   }
+  },
+  "DatabaseWriterEndpoint": {
+   "Description": "Aurora PostgreSQL writer endpoint",
+   "Value": {
+    "Fn::GetAtt": [
+     "AuroraCluster23D869C0",
+     "Endpoint.Address"
+    ]
+   }
+  },
+  "DatabaseSecretArn": {
+   "Description": "ARN of the database credentials secret",
+   "Value": {
+    "Ref": "AuroraSecret41E6E877"
+   }
+  },
+  "AppSecretsArn": {
+   "Description": "ARN of the application secrets",
+   "Value": {
+    "Ref": "AppSecretsA1997F2A"
+   }
+  },
+  "ApiGatewayUrl": {
+   "Description": "API Gateway URL for Slack webhooks",
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "TimeLoggerAPIB7D1F046"
+      },
+      ".execute-api.ap-southeast-2.",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "TimeLoggerAPIDeploymentStageprod389B0C07"
+      },
+      "/"
+     ]
+    ]
+   }
+  },
+  "SlackEventsUrl": {
+   "Description": "Slack Events API URL",
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "TimeLoggerAPIB7D1F046"
+      },
+      ".execute-api.ap-southeast-2.",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "TimeLoggerAPIDeploymentStageprod389B0C07"
+      },
+      "/slack/events"
+     ]
+    ]
+   }
+  },
+  "SlackInteractionsUrl": {
+   "Description": "Slack Interactions URL",
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "TimeLoggerAPIB7D1F046"
+      },
+      ".execute-api.ap-southeast-2.",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "TimeLoggerAPIDeploymentStageprod389B0C07"
+      },
+      "/slack/interactions"
+     ]
+    ]
+   }
+  },
+  "SlackCommandsUrl": {
+   "Description": "Slack Commands URL",
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "TimeLoggerAPIB7D1F046"
+      },
+      ".execute-api.ap-southeast-2.",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "TimeLoggerAPIDeploymentStageprod389B0C07"
+      },
+      "/slack/commands"
+     ]
+    ]
+   }
+  },
+  "HealthCheckUrl": {
+   "Description": "Health check URL",
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "TimeLoggerAPIB7D1F046"
+      },
+      ".execute-api.ap-southeast-2.",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "TimeLoggerAPIDeploymentStageprod389B0C07"
+      },
+      "/health"
+     ]
+    ]
+   }
+  },
+  "MigrationUrl": {
+   "Description": "Database migration URL",
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "TimeLoggerAPIB7D1F046"
+      },
+      ".execute-api.ap-southeast-2.",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "TimeLoggerAPIDeploymentStageprod389B0C07"
+      },
+      "/migration"
+     ]
+    ]
+   }
+  },
+  "FixPermissionsUrl": {
+   "Description": "Fix Aurora permissions URL",
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "TimeLoggerAPIB7D1F046"
+      },
+      ".execute-api.ap-southeast-2.",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "TimeLoggerAPIDeploymentStageprod389B0C07"
+      },
+      "/fix-permissions"
+     ]
+    ]
+   }
+  },
+  "DebugVersionUrl": {
+   "Description": "Debug version URL",
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "TimeLoggerAPIB7D1F046"
+      },
+      ".execute-api.ap-southeast-2.",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "TimeLoggerAPIDeploymentStageprod389B0C07"
+      },
+      "/debug-version"
+     ]
+    ]
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

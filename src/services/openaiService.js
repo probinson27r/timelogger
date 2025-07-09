@@ -8,8 +8,18 @@ class OpenAIService {
     }
 
     this.client = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY
+      apiKey: process.env.OPENAI_API_KEY,
+      timeout: 3000 // 3 second timeout
     });
+  }
+
+  // Helper function to add timeout to any promise
+  async withTimeout(promise, timeoutMs = 3000) {
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('OpenAI request timed out')), timeoutMs);
+    });
+
+    return Promise.race([promise, timeoutPromise]);
   }
 
   async parseIntent(userMessage, context = {}) {
@@ -72,15 +82,18 @@ Context: ${JSON.stringify(context)}
 
 Please analyze this message and return the JSON response:`;
 
-      const response = await this.client.chat.completions.create({
-        model: 'gpt-3.5-turbo',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userPrompt }
-        ],
-        temperature: 0.3,
-        max_tokens: 500
-      });
+      const response = await this.withTimeout(
+        this.client.chat.completions.create({
+          model: 'gpt-3.5-turbo',
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userPrompt }
+          ],
+          temperature: 0.3,
+          max_tokens: 500
+        }),
+        3000 // 3 second timeout
+      );
 
       const content = response.choices[0].message.content.trim();
       
@@ -101,8 +114,63 @@ Please analyze this message and return the JSON response:`;
       }
     } catch (error) {
       logger.error('Error calling OpenAI:', error);
+      
+      // If it's a timeout, return a fallback response
+      if (error.message.includes('timed out')) {
+        logger.warn('OpenAI request timed out, using fallback parsing');
+        return this.fallbackParseIntent(userMessage);
+      }
+      
       throw new Error('Failed to process your message. Please try again.');
     }
+  }
+
+  // Fallback intent parsing when OpenAI is unavailable or times out
+  fallbackParseIntent(userMessage) {
+    const text = userMessage.toLowerCase();
+    
+    // Simple keyword-based parsing
+    if (text.includes('ticket') && (text.includes('show') || text.includes('my') || text.includes('assigned'))) {
+      return {
+        intent: 'get_my_tickets',
+        confidence: 0.7,
+        parameters: {}
+      };
+    }
+    
+    if (text.includes('report') || text.includes('time logged') || text.includes('hours logged')) {
+      return {
+        intent: 'get_time_report',
+        confidence: 0.7,
+        parameters: { period: 'all' }
+      };
+    }
+    
+    // Look for time logging patterns
+    const hoursMatch = text.match(/(\d+(?:\.\d+)?)\s*(?:hours?|hrs?|h)/i);
+    const ticketMatch = text.match(/([A-Z]+[-_]\d+)/i);
+    
+    if (hoursMatch) {
+      const params = { hours: parseFloat(hoursMatch[1]) };
+      if (ticketMatch) {
+        params.ticket_key = ticketMatch[1];
+      }
+      
+      return {
+        intent: 'log_time',
+        confidence: 0.6,
+        parameters: params,
+        clarification_needed: !ticketMatch ? 'Which ticket would you like to log this time to?' : ''
+      };
+    }
+    
+    // Default to unclear
+    return {
+      intent: 'unclear',
+      confidence: 0.1,
+      parameters: {},
+      clarification_needed: 'I\'m not sure what you\'d like to do. You can ask me to show your tickets, log time, or search for tickets.'
+    };
   }
 
   async generateTicketSelection(tickets, userQuery) {
@@ -122,15 +190,18 @@ ${tickets.map(ticket => `${ticket.key}: ${ticket.summary}`).join('\n')}
 
 Return JSON array of relevant ticket keys:`;
 
-      const response = await this.client.chat.completions.create({
-        model: 'gpt-3.5-turbo',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userPrompt }
-        ],
-        temperature: 0.3,
-        max_tokens: 200
-      });
+      const response = await this.withTimeout(
+        this.client.chat.completions.create({
+          model: 'gpt-3.5-turbo',
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userPrompt }
+          ],
+          temperature: 0.3,
+          max_tokens: 200
+        }),
+        2000 // 2 second timeout for this simpler task
+      );
 
       const content = response.choices[0].message.content.trim();
       
@@ -165,15 +236,18 @@ User input: ${userInput}
 
 Generate work description:`;
 
-      const response = await this.client.chat.completions.create({
-        model: 'gpt-3.5-turbo',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userPrompt }
-        ],
-        temperature: 0.7,
-        max_tokens: 100
-      });
+      const response = await this.withTimeout(
+        this.client.chat.completions.create({
+          model: 'gpt-3.5-turbo',
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userPrompt }
+          ],
+          temperature: 0.7,
+          max_tokens: 100
+        }),
+        2000 // 2 second timeout
+      );
 
       return response.choices[0].message.content.trim();
     } catch (error) {

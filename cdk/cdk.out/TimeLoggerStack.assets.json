@@ -1,0 +1,66 @@
+{
+  "version": "45.0.0",
+  "files": {
+    "7fa1e366ee8a9ded01fc355f704cff92bfd179574e6f9cfee800a3541df1b200": {
+      "displayName": "TimeLoggerStack/Custom::VpcRestrictDefaultSGCustomResourceProvider Code",
+      "source": {
+        "path": "asset.7fa1e366ee8a9ded01fc355f704cff92bfd179574e6f9cfee800a3541df1b200",
+        "packaging": "zip"
+      },
+      "destinations": {
+        "199279692978-ap-southeast-2": {
+          "bucketName": "cdk-hnb659fds-assets-199279692978-ap-southeast-2",
+          "objectKey": "7fa1e366ee8a9ded01fc355f704cff92bfd179574e6f9cfee800a3541df1b200.zip",
+          "region": "ap-southeast-2",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::199279692978:role/cdk-hnb659fds-file-publishing-role-199279692978-ap-southeast-2"
+        }
+      }
+    },
+    "543f780cc2062944291d5ea5db87318327a05924328830f9152b23fbafc86d4a": {
+      "displayName": "SlackEventsFunction/Code",
+      "source": {
+        "path": "asset.543f780cc2062944291d5ea5db87318327a05924328830f9152b23fbafc86d4a",
+        "packaging": "zip"
+      },
+      "destinations": {
+        "199279692978-ap-southeast-2": {
+          "bucketName": "cdk-hnb659fds-assets-199279692978-ap-southeast-2",
+          "objectKey": "543f780cc2062944291d5ea5db87318327a05924328830f9152b23fbafc86d4a.zip",
+          "region": "ap-southeast-2",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::199279692978:role/cdk-hnb659fds-file-publishing-role-199279692978-ap-southeast-2"
+        }
+      }
+    },
+    "2819175352ad1ce0dae768e83fc328fb70fb5f10b4a8ff0ccbcb791f02b0716d": {
+      "displayName": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/Code",
+      "source": {
+        "path": "asset.2819175352ad1ce0dae768e83fc328fb70fb5f10b4a8ff0ccbcb791f02b0716d",
+        "packaging": "zip"
+      },
+      "destinations": {
+        "199279692978-ap-southeast-2": {
+          "bucketName": "cdk-hnb659fds-assets-199279692978-ap-southeast-2",
+          "objectKey": "2819175352ad1ce0dae768e83fc328fb70fb5f10b4a8ff0ccbcb791f02b0716d.zip",
+          "region": "ap-southeast-2",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::199279692978:role/cdk-hnb659fds-file-publishing-role-199279692978-ap-southeast-2"
+        }
+      }
+    },
+    "b00deecc10529d301052bbb095f2226042f011a28fca496894e01220acae41c3": {
+      "displayName": "TimeLoggerStack Template",
+      "source": {
+        "path": "TimeLoggerStack.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "199279692978-ap-southeast-2": {
+          "bucketName": "cdk-hnb659fds-assets-199279692978-ap-southeast-2",
+          "objectKey": "b00deecc10529d301052bbb095f2226042f011a28fca496894e01220acae41c3.json",
+          "region": "ap-southeast-2",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::199279692978:role/cdk-hnb659fds-file-publishing-role-199279692978-ap-southeast-2"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

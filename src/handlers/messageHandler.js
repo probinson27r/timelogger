@@ -7,48 +7,60 @@ const {
   updateUserSessionById, 
   deleteUserSession,
   deleteUserSessionById 
-} = require('../services/auroraService');
+} = require('../services/databaseAdapter');
 const dateParser = require('../utils/dateParser');
 const { getIconSet } = require('../utils/iconConfig');
 const logger = require('../utils/logger');
 const moment = require('moment');
 const { WebClient } = require('@slack/web-api');
 
-// Version: 2025-07-07-03-45-00 - Fixed date parsing null check error
-// Version 12 - Fixed null check for parsedDate.date
+// Version: 2025-07-07-20:47 - FORCE REFRESH ALL LAMBDA VERSIONS - Fixed date parsing
+// Version 13 - Forced refresh to eliminate cached lambda versions
 
 class MessageHandler {
   /**
    * Handle incoming Slack messages
    */
   async handleMessage({ message, say, client }) {
+    logger.info('[DEBUG] handleMessage called with message:', { userId: message.user, text: message.text });
+    
     const userId = message.user;
     const text = message.text;
+    
+    logger.info('[DEBUG] Extracted userId:', userId, 'text:', text);
     
     try {
       // Skip bot messages and empty messages
       if (message.subtype === 'bot_message' || !text) {
+        logger.info('[DEBUG] Skipping bot message or empty text');
         return;
       }
 
-      logger.info('Processing Slack message:', { userId, text });
+      logger.info('[DEBUG] Processing Slack message:', { userId, text });
 
       // Check for help requests
       if (text.toLowerCase().includes('help')) {
+        logger.info('[DEBUG] Help request detected');
         return await this.sendHelpMessage(say, userId);
       }
 
       // Check if user has configured Jira access
+      logger.info('[DEBUG] Checking user configuration');
       const isConfigured = await configHandler.isUserConfigured(userId, 'slack');
+      logger.info('[DEBUG] User configuration check result:', isConfigured);
       if (!isConfigured) {
         return await this.sendConfigurationPrompt(say, userId);
       }
 
       // Use OpenAI to parse the user's intent
+      logger.info('[DEBUG] Starting OpenAI intent parsing');
       const intent = await openaiService.parseIntent(text);
+      logger.info('[DEBUG] OpenAI intent parsing completed:', intent);
       
       if (intent.intent === 'log_time') {
+        logger.info('[DEBUG] Calling handleTimeLoggingIntent');
         await this.handleTimeLoggingIntent(intent, userId, say, client);
+        logger.info('[DEBUG] handleTimeLoggingIntent completed');
       } else if (intent.intent === 'get_time_report') {
         await this.handleTimeReportingIntent(intent, userId, say, client);
       } else if (intent.intent === 'get_my_tickets') {
@@ -82,9 +94,16 @@ class MessageHandler {
    * Handle time logging intent
    */
   async handleTimeLoggingIntent(intent, userId, say, client) {
+    logger.info('[DEBUG] handleTimeLoggingIntent called with intent:', JSON.stringify(intent, null, 2));
+    logger.info('[DEBUG] handleTimeLoggingIntent userId:', userId);
+    
     try {
+      logger.info('[DEBUG] Starting handleTimeLoggingIntent with enhanced error handling v3');
+      logger.info('[DEBUG] Step 1: Getting icon set');
       const icons = await getIconSet(userId, 'slack');
+      logger.info('[DEBUG] Step 2: Getting Jira service');
       const jiraService = await configHandler.getUserJiraService(userId, 'slack');
+      logger.info('[DEBUG] Step 3: Jira service obtained successfully');
       
       if (!jiraService) {
         return await this.sendConfigurationPrompt(say, userId);
@@ -131,7 +150,7 @@ class MessageHandler {
           description,
           parsedDate: parsedDate ? parsedDate.iso : null,
           dateString
-        });
+        }, new Date(Date.now() + 30 * 60 * 1000)); // Expire in 30 minutes
 
         const ticketOptions = tickets.slice(0, 25).map(ticket => ({
           text: { 
@@ -171,7 +190,7 @@ class MessageHandler {
         description,
         parsedDate: parsedDate ? parsedDate.iso : null,
         dateString
-      });
+      }, new Date(Date.now() + 30 * 60 * 1000)); // Expire in 30 minutes
 
       const dateStr = parsedDate ? parsedDate.formatted : 'today';
       
@@ -229,7 +248,18 @@ class MessageHandler {
 
       const { period } = intent.parameters;
       
+      logger.info('[DEBUG] Time report requested for period:', period);
+      
       const reportData = await jiraService.getMyTimeReports(period);
+      
+      logger.info('[DEBUG] Report data:', {
+        period: reportData.period,
+        startDate: reportData.startDate,
+        endDate: reportData.endDate,
+        totalHours: reportData.totalHours,
+        totalSeconds: reportData.totalSeconds,
+        worklogsByTicket: Object.keys(reportData.worklogsByTicket)
+      });
       
       if (reportData.totalHours === 0) {
         await say({
@@ -460,51 +490,98 @@ class MessageHandler {
 
       const { ticketKey, hours, description, parsedDate } = session.session_data;
       
+      logger.info('[DEBUG] Session data:', { ticketKey, hours, description, parsedDate });
+      
       // Log the time - fix date parsing issue
       let worklogDate;
       if (parsedDate && parsedDate !== 'null' && parsedDate !== null) {
         try {
-          worklogDate = new Date(parsedDate);
+          // Ensure we have a proper Date object
+          if (typeof parsedDate === 'string') {
+            worklogDate = new Date(parsedDate);
+          } else if (parsedDate instanceof Date) {
+            worklogDate = parsedDate;
+          } else {
+            worklogDate = new Date();
+          }
+          
           // Check if the date is valid
           if (isNaN(worklogDate.getTime())) {
+            logger.warn('Invalid date parsed, using current date:', parsedDate);
             worklogDate = new Date();
           }
         } catch (error) {
+          logger.error('Error parsing date, using current date:', error);
           worklogDate = new Date();
         }
       } else {
         worklogDate = new Date();
       }
       
+      logger.info('[DEBUG] Final worklog date:', worklogDate);
+      
       const result = await jiraService.logWork(ticketKey, hours, description, worklogDate);
+      
+      logger.info('[DEBUG] Jira service result:', result);
       
       await deleteUserSessionById(sessionId);
       
       if (result.success) {
-        const dateStr = worklogDate.toLocaleDateString();
-        await say({
-          text: `${icons.success}Successfully logged ${hours} hours to ${ticketKey} on ${dateStr}`,
-          blocks: [{
-            type: 'section',
-            text: {
-              type: 'mrkdwn',
-              text: `${icons.success}*Time Logged Successfully!*\n*Ticket:* ${ticketKey}\n*Hours:* ${hours}\n*Date:* ${dateStr}${description ? `\n*Description:* ${description}` : ''}`
-            }
-          }]
-        });
+        try {
+          const dateStr = worklogDate.toLocaleDateString();
+          await say({
+            text: `${icons.success}Successfully logged ${hours} hours to ${ticketKey} on ${dateStr}`,
+            blocks: [{
+              type: 'section',
+              text: {
+                type: 'mrkdwn',
+                text: `${icons.success}*Time Logged Successfully!*\n*Ticket:* ${ticketKey}\n*Hours:* ${hours}\n*Date:* ${dateStr}${description ? `\n*Description:* ${description}` : ''}`
+              }
+            }]
+          });
+        } catch (sayError) {
+          logger.error('Error sending success message:', sayError);
+          // Fallback to simple success message
+          await say({
+            text: `✅ Successfully logged ${hours} hours to ${ticketKey}`
+          });
+        }
       } else {
-        await say({
-          text: `${icons.error}Failed to log time: ${result.error}`
-        });
+        try {
+          await say({
+            text: `${icons.error}Failed to log time: ${result.error}`
+          });
+        } catch (sayError) {
+          logger.error('Error sending failure message:', sayError);
+          // Fallback to simple error message
+          await say({
+            text: `❌ Failed to log time: ${result.error}`
+          });
+        }
       }
       
     } catch (error) {
       logger.error('Error handling time logging:', error);
-      const userId = body.user.id;
-      const icons = await getIconSet(userId, 'slack');
-      await say({
-        text: `${icons.error}Sorry, I encountered an error logging your time.`
+      logger.error('Error details:', {
+        message: error.message,
+        stack: error.stack,
+        userId: body.user.id,
+        sessionId: sessionId
       });
+      
+      try {
+        const userId = body.user.id;
+        const icons = await getIconSet(userId, 'slack');
+        await say({
+          text: `${icons.error}Sorry, I encountered an error logging your time.`
+        });
+      } catch (sayError) {
+        logger.error('Error sending error message:', sayError);
+        // Fallback to simple error message
+        await say({
+          text: '❌ Sorry, I encountered an error logging your time.'
+        });
+      }
     }
   }
 
@@ -855,14 +932,14 @@ class MessageHandler {
           type: 'section',
           text: {
             type: 'mrkdwn',
-            text: `${icons.info}*Natural Language Examples:*\n• "Log 3 hours to PROJ-123"\n• "I worked 2 hours yesterday on bug fixing"\n• "Log 4h to ticket last Friday"\n• "How many hours did I log today?"\n• "Show me my time report for this week"`
+            text: `${icons.info}*Available Commands:*\n• \`/timelog\` - Log time to Jira tickets\n• \`/timereport\` - Get time reports\n• \`/mytickets\` - View your assigned tickets\n• \`/jiraconfig\` - Configure Jira access\n• \`/iconconfig\` - Customize icons`
           }
         },
         {
           type: 'section',
           text: {
             type: 'mrkdwn',
-            text: `${icons.config}*Commands:*\n• \`/jiraconfig\` - Set up your Jira access\n• \`/timelog\` - Log time to tickets\n• \`/mytickets\` - Show assigned tickets\n• \`/timereport\` - Generate time reports\n• \`/iconconfig\` - Configure icon display`
+            text: `${icons.info}*Natural Language Examples:*\n• "I worked on PROJ-123 for 3 hours yesterday"\n• "Log 2h to PROJ-456 working on feature"\n• "Show my time report for this week"`
           }
         }
       ]
@@ -870,4 +947,4 @@ class MessageHandler {
   }
 }
 
-module.exports = new MessageHandler(); 
+module.exports = new MessageHandler();

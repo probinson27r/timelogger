@@ -8,7 +8,7 @@ const {
   updateUserSessionById, 
   deleteUserSession,
   deleteUserSessionById 
-} = require('../services/database');
+} = require('../services/databaseAdapter');
 const dateParser = require('../utils/dateParser');
 const { getIconSet } = require('../utils/iconConfig');
 const { formatAsAdaptiveCard } = require('../utils/teamsFormatter');

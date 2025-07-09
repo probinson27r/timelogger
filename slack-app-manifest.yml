@@ -1,69 +1,63 @@
 display_information:
-  name: Time Logger Bot
-  description: Multi-tenant Jira time logging bot with natural language processing. Each user configures their own Jira access for secure, personalized time tracking.
+  name: Time Logger
+  description: AI-powered time tracking bot with natural language processing and Jira integration
   background_color: "#2c3e50"
   long_description: "Time Logger Bot is a sophisticated multi-tenant application that allows team members to log time to Jira tickets using natural language. Each user securely configures their own Jira access, ensuring data privacy and supporting multiple Jira instances (Cloud and Server/Data Center). Features include: natural language time logging, smart ticket selection, comprehensive time reports, customizable icons, and seamless integration with both Slack and Teams."
 
 features:
   app_home:
     home_tab_enabled: true
-    messages_tab_enabled: true
+    messages_tab_enabled: false
     messages_tab_read_only_enabled: false
   bot_user:
     display_name: Time Logger
     always_online: true
   slash_commands:
-    - command: /jiraconfig
-      url: https://your-domain.com/slack/events
-      description: Configure your Jira access - supports both Cloud (email+token) and Server (PAT)
-      usage_hint: "Cloud: https://company.atlassian.net api-token user@email.com | Server: https://jira.company.com personal-access-token"
-      should_escape: false
     - command: /timelog
-      url: https://your-domain.com/slack/events
-      description: Log time to Jira tickets using natural language
-      usage_hint: "3 hours to PROJ-123 working on feature implementation"
+      url: https://63jzcnjke8.execute-api.ap-southeast-2.amazonaws.com/prod/slack/commands
+      description: Log time to a Jira ticket
+      usage_hint: "[hours] [ticket] [description]"
       should_escape: false
     - command: /mytickets
-      url: https://your-domain.com/slack/events
-      description: Show your assigned Jira tickets with quick log buttons
-      usage_hint: ""
+      url: https://63jzcnjke8.execute-api.ap-southeast-2.amazonaws.com/prod/slack/commands
+      description: Show your assigned Jira tickets
       should_escape: false
     - command: /timereport
-      url: https://your-domain.com/slack/events
-      description: Generate time reports for different periods
-      usage_hint: "today | week | month | year"
+      url: https://63jzcnjke8.execute-api.ap-southeast-2.amazonaws.com/prod/slack/commands
+      description: Generate a time report
+      usage_hint: "[period] [user]"
+      should_escape: false
+    - command: /jiraconfig
+      url: https://63jzcnjke8.execute-api.ap-southeast-2.amazonaws.com/prod/slack/commands
+      description: Configure your Jira settings
       should_escape: false
     - command: /iconconfig
-      url: https://your-domain.com/slack/events
+      url: https://63jzcnjke8.execute-api.ap-southeast-2.amazonaws.com/prod/slack/commands
       description: Configure icon display preferences
-      usage_hint: "current | large | small | minimal | text | none"
       should_escape: false
 
 oauth_config:
   scopes:
     bot:
       - app_mentions:read
+      - channels:history
+      - channels:read
       - chat:write
       - chat:write.public
       - commands
-      - files:read
+      - groups:history
+      - groups:read
       - im:history
       - im:read
       - im:write
       - mpim:history
       - mpim:read
-      - mpim:write
-      - channels:history
-      - channels:read
-      - groups:history
-      - groups:read
       - users:read
       - users:read.email
-      - reactions:read
-      - reactions:write
 
 settings:
   event_subscriptions:
+    request_url: https://63jzcnjke8.execute-api.ap-southeast-2.amazonaws.com/prod/slack/events
     bot_events:
       - app_mention
       - message.channels
@@ -72,8 +66,9 @@ settings:
       - message.mpim
   interactivity:
     is_enabled: true
+    request_url: https://63jzcnjke8.execute-api.ap-southeast-2.amazonaws.com/prod/slack/interactions
   org_deploy_enabled: false
-  socket_mode_enabled: true
+  socket_mode_enabled: false
   token_rotation_enabled: false
 
 # Multi-Tenant Jira Cloud & Server Support

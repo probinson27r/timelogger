@@ -1,3 +1,11 @@
+// Conditional database service - use Aurora on AWS, SQLite locally
+if (process.env.NODE_ENV === 'production' && process.env.DB_SECRET_ARN) {
+  // Running on AWS - use the database adapter
+  module.exports = require('./databaseAdapter');
+  return;
+}
+
+// Original SQLite implementation for local development
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const fs = require('fs');

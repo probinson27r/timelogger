@@ -1,7 +1,3 @@
-const { getIconSet, setIconSet, getAvailableIconSets } = require('../utils/iconConfig');
-const TeamsFormatter = require('../utils/teamsFormatter');
-const logger = require('../utils/logger');
-const { CardFactory } = require('botbuilder');
 const { openaiService } = require('../services/openaiService');
 const configHandler = require('./configHandler');
 const { 
@@ -11,9 +7,12 @@ const {
   updateUserSessionById, 
   deleteUserSession,
   deleteUserSessionById 
-} = require('../services/database');
-const { parseDate } = require('../utils/dateParser');
+} = require('../services/databaseAdapter');
+const dateParser = require('../utils/dateParser');
+const { getIconSet } = require('../utils/iconConfig');
 const { formatAsAdaptiveCard } = require('../utils/teamsFormatter');
+const logger = require('../utils/logger');
+const moment = require('moment');
 
 class TeamsCommandHandler {
   /**
@@ -443,8 +442,8 @@ class TeamsCommandHandler {
       // Parse date if provided
       let parsedDate = null;
       if (dateString) {
-        parsedDate = parseDate(dateString);
-        if (!parsedDate) {
+        const dateResult = dateParser.parseDate(dateString);
+        if (!dateResult.isValid) {
           await context.sendActivity({
             type: 'message',
             text: `${icons.error}I couldn't understand the date "${dateString}". Please use formats like "yesterday", "last Friday", or "July 1st".`
@@ -452,8 +451,10 @@ class TeamsCommandHandler {
           return;
         }
         
+        parsedDate = dateResult; // Keep the full result object
+        
         // Check if date is in the future
-        if (parsedDate > new Date()) {
+        if (parsedDate.date && parsedDate.date.isAfter(moment(), 'day')) {
           await context.sendActivity({
             type: 'message',
             text: `${icons.error}Cannot log time for future dates. Please specify a past date.`
@@ -469,11 +470,11 @@ class TeamsCommandHandler {
         ticketKey,
         hours,
         description,
-        parsedDate: parsedDate ? parsedDate.toISOString() : null,
+        parsedDate: parsedDate ? parsedDate.iso : null,
         dateString
       });
 
-      const dateStr = parsedDate ? parsedDate.toLocaleDateString() : 'today';
+      const dateStr = parsedDate ? parsedDate.formatted : 'today';
       
       const fields = [
         { name: 'Ticket', value: ticketKey },

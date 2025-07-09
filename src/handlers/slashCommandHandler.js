@@ -1,9 +1,8 @@
+// Version: 2025-07-07-03-45-00 - Fixed missing moment import
 const logger = require('../utils/logger');
 const { databaseService } = require('../services/database');
+// Version: 2025-07-07-20:47 - FORCE REFRESH ALL LAMBDA VERSIONS
 const { openaiService } = require('../services/openaiService');
-const moment = require('moment');
-const dateParser = require('../utils/dateParser');
-const icons = require('../utils/iconConfig');
 const configHandler = require('./configHandler');
 const { 
   getUserSession, 
@@ -13,8 +12,9 @@ const {
   deleteUserSession,
   deleteUserSessionById 
 } = require('../services/database');
-const { parseDate } = require('../utils/dateParser');
+const dateParser = require('../utils/dateParser');
 const { getIconSet } = require('../utils/iconConfig');
+const moment = require('moment');
 
 class SlashCommandHandler {
   async handleTimeLogCommand({ command, ack, say, client }) {
@@ -22,7 +22,7 @@ class SlashCommandHandler {
 
     try {
       const userId = command.user_id;
-      const text = command.text;
+      const text = command.text.trim();
       const icons = await getIconSet(userId, 'slack');
 
       logger.info('Processing timelog command:', { userId, text });
@@ -34,20 +34,25 @@ class SlashCommandHandler {
         return;
       }
 
-      if (!text || text.trim() === '') {
-        // Show quick time logging interface
+      const jiraService = await configHandler.getUserJiraService(userId, 'slack');
+      if (!jiraService) {
+        await this.sendConfigurationPrompt(say, userId);
+        return;
+      }
+
+      if (!text) {
         await this.showTimeLogInterface(userId, say);
         return;
       }
 
-      // Parse the command text using OpenAI
-      const intent = await openaiService.parseIntent(text, { userId, command: 'timelog' });
+      // Parse the natural language input
+      const intent = await openaiService.parseIntent(text);
       
       if (intent.intent === 'log_time') {
         await this.handleTimeLogging(intent, userId, say);
       } else {
         await say({
-          text: intent.clarification_needed || "Please specify what you'd like to log. Example: `/timelog 3 hours to ABC-123`",
+          text: `${icons.help}I couldn't understand that time log request. Try something like:\n• \`/timelog 3 hours to PROJ-123 working on feature\`\n• \`/timelog 2h yesterday to PROJ-456\`\n• Or just \`/timelog\` to see the interface`,
           response_type: 'ephemeral'
         });
       }
@@ -56,7 +61,7 @@ class SlashCommandHandler {
       logger.error('Error handling timelog command:', error);
       const icons = await getIconSet(command.user_id, 'slack');
       await say({
-        text: `${icons.error}Sorry, I encountered an error processing your command. Please try again.`,
+        text: `${icons.error}Sorry, I encountered an error processing your time log. Please try again.`,
         response_type: 'ephemeral'
       });
     }
@@ -88,7 +93,7 @@ class SlashCommandHandler {
 
       if (tickets.length === 0) {
         await say({
-          text: `${icons.error}You don't have any assigned tickets right now! ${icons.get('celebration')}`,
+          text: `${icons.success}You don't have any assigned tickets right now! 🎉`,
           response_type: 'ephemeral'
         });
         return;
@@ -237,12 +242,26 @@ class SlashCommandHandler {
 
   async handleTimeLogging(intent, userId, say) {
     const { hours, ticket_key, description, date } = intent.parameters;
+    const icons = await getIconSet(userId, 'slack');
 
     if (!hours) {
       await say({
         text: "Please specify how many hours you'd like to log. Example: `/timelog 3 hours to ABC-123` or `/timelog 2h yesterday`",
         response_type: 'ephemeral'
       });
+      return;
+    }
+
+    // Check if user is configured
+    const isConfigured = await configHandler.isUserConfigured(userId, 'slack');
+    if (!isConfigured) {
+      await this.sendConfigurationPrompt(say, userId);
+      return;
+    }
+
+    const jiraService = await configHandler.getUserJiraService(userId, 'slack');
+    if (!jiraService) {
+      await this.sendConfigurationPrompt(say, userId);
       return;
     }
 
@@ -258,7 +277,8 @@ class SlashCommandHandler {
         });
         return;
       }
-      parsedDate = dateInfo.date;
+      // Convert moment object to Date object for Jira service
+      parsedDate = dateInfo.date ? dateInfo.date.toDate() : null;
       
       // Check if date is in the future
       if (!dateInfo.isPast && !dateInfo.isToday) {
@@ -275,7 +295,7 @@ class SlashCommandHandler {
       const sessionData = { 
         hours, 
         description, 
-        date: parsedDate ? parsedDate.toISOString() : null,
+        date: parsedDate ? parsedDate.iso : null,
         dateFormatted: dateInfo ? dateInfo.displayText : null,
         source: 'slash_command' 
       };
@@ -329,40 +349,62 @@ class SlashCommandHandler {
 
   async logTimeToTicket(userId, ticketKey, hours, description, parsedDate, dateInfo, say) {
     try {
+      logger.info('[DEBUG] logTimeToTicket called with:', { userId, ticketKey, hours, description, parsedDate, dateInfo });
+      
+      const icons = await getIconSet(userId, 'slack');
+      const jiraService = await configHandler.getUserJiraService(userId, 'slack');
+      
+      if (!jiraService) {
+        await say({
+          text: `${icons.error}Jira service not configured. Please run /jiraconfig first.`,
+          response_type: 'ephemeral'
+        });
+        return;
+      }
+
       // Get ticket details
-      const ticket = await jiraService.getTicketDetails(ticketKey);
+      logger.info('[DEBUG] Getting ticket details for:', ticketKey);
+      const ticket = await jiraService.getTicket(ticketKey);
+      logger.info('[DEBUG] Ticket details:', { summary: ticket.summary });
       
       // Generate description if not provided
       let workDescription = description;
       if (!workDescription) {
-        workDescription = await openaiService.suggestWorkDescription(ticket.summary, hours);
+        logger.info('[DEBUG] Generating work description');
+        workDescription = await openaiService.generateWorkDescription(ticket.summary, hours);
       }
 
-      // Log work to Jira
-      const timeInSeconds = jiraService.hoursToSeconds(hours);
-      const worklog = await jiraService.logWork(ticketKey, timeInSeconds, workDescription, parsedDate);
+      // Ensure parsedDate is always a valid moment object
+      if (!parsedDate || !parsedDate.date) {
+        parsedDate = {
+          date: moment(),
+          formatted: moment().format('YYYY-MM-DD'),
+          iso: moment().toISOString(),
+        };
+      }
 
-      // Store in database
-      const logDate = parsedDate ? parsedDate.format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
-      await databaseService.logTimeEntry(
-        userId,
-        ticketKey,
-        hours,
-        workDescription,
-        logDate,
-        worklog.id
-      );
+      // Log work to Jira using UserJiraService API
+      logger.info('[DEBUG] Logging work to Jira:', { ticketKey, hours, workDescription, parsedDate });
+      const result = await jiraService.logWork(ticketKey, hours, workDescription, parsedDate.date);
+      logger.info('[DEBUG] Jira logWork result:', result);
 
-      const dateText = worklog.workDateFormatted ? ` for ${worklog.workDateFormatted}` : '';
+      if (!result.success) {
+        throw new Error(result.error);
+      }
+
+      // Store in database (optional - could be added later)
+      const logDate = parsedDate ? parsedDate.formatted : moment().format('YYYY-MM-DD');
+      
+      const dateText = logDate !== moment().format('YYYY-MM-DD') ? ` for ${logDate}` : '';
 
       await say({
-        text: `${icons.get('success')}Successfully logged ${hours} hours to ${ticketKey}${dateText}!`,
+        text: `${icons.success}Successfully logged ${hours} hours to ${ticketKey}${dateText}!`,
         blocks: [
           {
             type: 'section',
             text: {
               type: 'mrkdwn',
-              text: `${icons.get('success')}*Time Logged Successfully*\n\n*Ticket:* ${ticketKey}\n*Time:* ${hours} hours\n*Date:* ${worklog.workDateFormatted || 'today'}\n*Description:* ${workDescription}\n*Summary:* ${ticket.summary}`
+              text: `${icons.success}*Time Logged Successfully*\n\n*Ticket:* ${ticketKey}\n*Time:* ${hours} hours\n*Date:* ${logDate}\n*Description:* ${workDescription}\n*Summary:* ${ticket.summary}`
             }
           }
         ],
@@ -371,8 +413,9 @@ class SlashCommandHandler {
 
     } catch (error) {
       logger.error('Error logging time to ticket:', error);
+      const icons = await getIconSet(userId, 'slack');
       await say({
-        text: `Sorry, I couldn't log time to ${ticketKey}. ${error.message}`,
+        text: `${icons.error}Sorry, I couldn't log time to ${ticketKey}. ${error.message}`,
         response_type: 'ephemeral'
       });
     }
@@ -404,9 +447,21 @@ class SlashCommandHandler {
       // Parse the period parameter
       let period = 'all';
       if (text) {
-        const validPeriods = ['today', 'week', 'month', 'year'];
-        if (validPeriods.includes(text.toLowerCase())) {
-          period = text.toLowerCase();
+        const textLower = text.toLowerCase();
+        if (textLower.includes('today')) {
+          period = 'today';
+        } else if (textLower.includes('week')) {
+          period = 'week';
+        } else if (textLower.includes('month')) {
+          period = 'month';
+        } else if (textLower.includes('year')) {
+          period = 'year';
+        } else {
+          // Check for exact matches as fallback
+          const validPeriods = ['today', 'week', 'month', 'year'];
+          if (validPeriods.includes(textLower)) {
+            period = textLower;
+          }
         }
       }
 
@@ -417,7 +472,7 @@ class SlashCommandHandler {
 
       // Use the same handler from messageHandler
       const messageHandler = require('./messageHandler');
-      await messageHandler.handleGetTimeReport(intent, userId, say);
+      await messageHandler.handleTimeReportingIntent(intent, userId, say);
 
     } catch (error) {
       logger.error('Error handling timereport command:', error);
@@ -434,51 +489,84 @@ class SlashCommandHandler {
 
     try {
       const userId = command.user_id;
-      const text = command.text.trim().toLowerCase();
+      const iconSet = command.text.trim().toLowerCase();
       const icons = await getIconSet(userId, 'slack');
 
-      logger.info('Processing iconconfig command:', { userId, text });
+      logger.info('Processing iconconfig command:', { userId, iconSet });
 
-      if (!text) {
-        // Show current configuration and options
-        const availableSets = icons.getAvailableSets();
-        const currentSet = icons.activeSet;
-        
-        const options = Object.entries(availableSets).map(([key, description]) => {
-          const current = key === currentSet ? ' (current)' : '';
-          return `• \`${key}\` - ${description}${current}`;
-        }).join('\n');
+      if (!iconSet) {
+        // Show current configuration and available options
+        const currentIconSet = await getUserIconSet(userId, 'slack');
+        const availableSets = getAvailableIconSets();
+
+        const blocks = [
+          {
+            type: 'header',
+            text: { type: 'plain_text', text: `${icons.config}Icon Configuration` }
+          },
+          {
+            type: 'section',
+            text: {
+              type: 'mrkdwn',
+              text: `*Current icon set:* ${currentIconSet.name}\n*Description:* ${currentIconSet.description}`
+            }
+          },
+          { type: 'divider' },
+          {
+            type: 'section',
+            text: {
+              type: 'mrkdwn',
+              text: '*Available icon sets:*'
+            }
+          }
+        ];
+
+        // Add each available icon set
+        availableSets.forEach(set => {
+          blocks.push({
+            type: 'section',
+            text: {
+              type: 'mrkdwn',
+              text: `*${set.name}* - ${set.description}\nExample: ${set.icons.success} ${set.icons.error} ${set.icons.ticket} ${set.icons.time}`
+            },
+            accessory: {
+              type: 'button',
+              text: { type: 'plain_text', text: 'Select' },
+              action_id: `icon_set_${set.name}`,
+              value: set.name
+            }
+          });
+        });
+
+        blocks.push({
+          type: 'context',
+          elements: [{
+            type: 'mrkdwn',
+            text: `Or use: \`/iconconfig <set-name>\` where set-name is one of: ${availableSets.map(s => s.name).join(', ')}`
+          }]
+        });
 
         await say({
-          text: `Icon Configuration`,
-          blocks: [
-            {
-              type: 'section',
-              text: {
-                type: 'mrkdwn',
-                text: `*${icons.get('robot')}Icon Configuration*\n\nCurrent set: *${currentSet}*\n\nAvailable icon sets:\n${options}\n\nTo change: \`/iconconfig [set_name]\``
-              }
-            }
-          ],
+          text: 'Icon Configuration',
+          blocks,
           response_type: 'ephemeral'
         });
         return;
       }
 
-      // Change icon set
-      const availableSets = Object.keys(icons.getAvailableSets());
-      if (availableSets.includes(text)) {
-        const oldSet = icons.activeSet;
-        icons.setIconSet(text);
-        
+      // Set the icon set
+      const result = await setUserIconSet(userId, 'slack', iconSet);
+      
+      if (result.success) {
+        const newIcons = await getIconSet(userId, 'slack');
         await say({
-          text: `${icons.get('success')}Icon set changed from "${oldSet}" to "${text}"`,
+          text: `${newIcons.success}Icon set changed to "${result.iconSet.name}"!`,
           blocks: [
             {
               type: 'section',
               text: {
                 type: 'mrkdwn',
-                text: `${icons.get('success')}*Icon Set Updated*\n\nChanged from: \`${oldSet}\`\nChanged to: \`${text}\`\n\nNew icons will appear in all future bot messages.`
+                text: `${newIcons.success}*Icon Set Updated!*\n\n*Set:* ${result.iconSet.name}\n*Description:* ${result.iconSet.description}\n*Examples:* ${newIcons.success} ${newIcons.error} ${newIcons.ticket} ${newIcons.time} ${newIcons.help}`
               }
             }
           ],
@@ -486,15 +574,16 @@ class SlashCommandHandler {
         });
       } else {
         await say({
-          text: `Invalid icon set: "${text}". Use \`/iconconfig\` to see available options.`,
+          text: `${icons.error}Invalid icon set "${iconSet}". Available sets: current, large, small, minimal, text, none`,
           response_type: 'ephemeral'
         });
       }
 
     } catch (error) {
       logger.error('Error handling iconconfig command:', error);
+      const icons = await getIconSet(command.user_id, 'slack');
       await say({
-        text: "Sorry, I encountered an error changing the icon configuration. Please try again.",
+        text: `${icons.error}Sorry, I encountered an error updating your icon configuration.`,
         response_type: 'ephemeral'
       });
     }

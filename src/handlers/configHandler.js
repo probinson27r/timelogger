@@ -1,3 +1,4 @@
+// Version: 2025-07-07-20:47 - FORCE REFRESH ALL LAMBDA VERSIONS
 const { 
   getUserConfiguration, 
   createOrUpdateUserConfiguration, 
@@ -152,14 +153,37 @@ class ConfigHandler {
    */
   async getUserJiraService(userId, platform) {
     try {
-      const config = await getUserConfiguration(userId, platform);
+      // Add timeout to prevent hanging
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Database query timed out')), 5000); // 5 second timeout
+      });
+
+      const configPromise = getUserConfiguration(userId, platform);
+      const config = await Promise.race([configPromise, timeoutPromise]);
+      
       if (!config || !config.is_configured) {
         return null;
       }
       
-      return new UserJiraService(config);
+      // Add timeout to Jira service creation
+      const serviceTimeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Jira service creation timed out')), 3000); // 3 second timeout
+      });
+
+      const servicePromise = new Promise((resolve) => {
+        resolve(new UserJiraService(config));
+      });
+
+      const jiraService = await Promise.race([servicePromise, serviceTimeoutPromise]);
+      return jiraService;
     } catch (error) {
       logger.error('Error creating user Jira service:', error);
+      logger.error('Error details:', {
+        message: error.message,
+        stack: error.stack,
+        userId,
+        platform
+      });
       return null;
     }
   }
