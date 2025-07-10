@@ -184,13 +184,44 @@ class MessageHandler {
       // Use provided description or leave empty
 
       // Create confirmation
-      const sessionId = await createUserSession(userId, 'slack', 'AWAITING_CONFIRMATION', {
+      const sessionData = {
         ticketKey,
         hours,
         description,
         parsedDate: parsedDate ? parsedDate.iso : null,
         dateString
-      }, new Date(Date.now() + 30 * 60 * 1000)); // Expire in 30 minutes
+      };
+      const expiresAt = new Date(Date.now() + 30 * 60 * 1000); // Expire in 30 minutes
+      
+      logger.info('[DEBUG] handleTimeLoggingIntent - creating session with data:', sessionData);
+      logger.info('[DEBUG] handleTimeLoggingIntent - expiresAt:', expiresAt);
+      
+      // Test database connection first
+      try {
+        const testSessionId = await createUserSession(userId, 'slack', 'TEST', { test: 'data' }, new Date(Date.now() + 60 * 1000));
+        logger.info('[DEBUG] handleTimeLoggingIntent - test session created:', testSessionId);
+        const testSession = await getUserSessionById(testSessionId);
+        logger.info('[DEBUG] handleTimeLoggingIntent - test session retrieved:', !!testSession);
+        await deleteUserSessionById(testSessionId);
+        logger.info('[DEBUG] handleTimeLoggingIntent - test session deleted');
+      } catch (error) {
+        logger.error('[DEBUG] handleTimeLoggingIntent - database test failed:', error);
+      }
+      
+      const sessionId = await createUserSession(userId, 'slack', 'AWAITING_CONFIRMATION', sessionData, expiresAt);
+
+      logger.info('[DEBUG] handleTimeLoggingIntent - created sessionId:', sessionId);
+      
+      // Verify the session was created by trying to retrieve it immediately
+      try {
+        const verifySession = await getUserSessionById(sessionId);
+        logger.info('[DEBUG] handleTimeLoggingIntent - session verification:', !!verifySession);
+        if (verifySession) {
+          logger.info('[DEBUG] handleTimeLoggingIntent - verified session data:', verifySession.session_data);
+        }
+      } catch (error) {
+        logger.error('[DEBUG] handleTimeLoggingIntent - session verification failed:', error);
+      }
 
       const dateStr = parsedDate ? parsedDate.formatted : 'today';
       
@@ -472,8 +503,37 @@ class MessageHandler {
       const sessionId = actionId.replace(/^log_time_(confirm|cancel)_/, '');
       const confirmed = body.actions[0].value === 'confirm';
 
+      logger.info('[DEBUG] handleTimeLogging - actionId:', actionId);
+      logger.info('[DEBUG] handleTimeLogging - extracted sessionId:', sessionId);
+      logger.info('[DEBUG] handleTimeLogging - confirmed:', confirmed);
+
       const session = await getUserSessionById(sessionId);
+      logger.info('[DEBUG] handleTimeLogging - session found:', !!session);
+      logger.info('[DEBUG] handleTimeLogging - session object:', JSON.stringify(session, null, 2));
+      if (session) {
+        logger.info('[DEBUG] handleTimeLogging - session data:', JSON.stringify(session.session_data, null, 2));
+        logger.info('[DEBUG] handleTimeLogging - session expires_at:', session.expires_at);
+        logger.info('[DEBUG] handleTimeLogging - session created_at:', session.created_at);
+        logger.info('[DEBUG] handleTimeLogging - session type:', session.session_type);
+        logger.info('[DEBUG] handleTimeLogging - session user_id:', session.user_id);
+        logger.info('[DEBUG] handleTimeLogging - session id:', session.id);
+        logger.info('[DEBUG] handleTimeLogging - session keys:', Object.keys(session));
+        logger.info('[DEBUG] handleTimeLogging - session data type:', typeof session.session_data);
+        logger.info('[DEBUG] handleTimeLogging - session data null check:', session.session_data === null);
+        logger.info('[DEBUG] handleTimeLogging - session data undefined check:', session.session_data === undefined);
+        logger.info('[DEBUG] handleTimeLogging - session data empty check:', session.session_data === '');
+        logger.info('[DEBUG] handleTimeLogging - session data length:', session.session_data ? session.session_data.length : 'N/A');
+      }
+      
       if (!session) {
+        logger.warn('[DEBUG] handleTimeLogging - session not found, sessionId:', sessionId);
+        // Let's also check if there are any sessions at all for this user
+        try {
+          const allSessions = await getUserSession(body.user.id, 'slack', 'AWAITING_CONFIRMATION');
+          logger.info('[DEBUG] handleTimeLogging - all sessions for user:', allSessions);
+        } catch (error) {
+          logger.error('[DEBUG] handleTimeLogging - error checking all sessions:', error);
+        }
         await say({
           text: `${icons.error}Session expired. Please try again.`
         });

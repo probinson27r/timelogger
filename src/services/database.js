@@ -75,6 +75,11 @@ class DatabaseService {
   }
 
   async initialize() {
+    // If already initialized, return early
+    if (this.db) {
+      return;
+    }
+
     try {
       // Ensure data directory exists
       const dataDir = path.dirname(this.dbPath);
@@ -242,16 +247,40 @@ class DatabaseService {
 
   async createUserSession(userId, platform, sessionType, sessionData, expiresAt) {
     return new Promise((resolve, reject) => {
+      const sessionDataJson = JSON.stringify(sessionData);
+      const db = this.db; // Store reference to avoid context issues
+      logger.info('[DEBUG] createUserSession - input:', { userId, platform, sessionType, sessionDataJson, expiresAt });
+      logger.info('[DEBUG] createUserSession - sessionDataJson length:', sessionDataJson.length);
+      logger.info('[DEBUG] createUserSession - sessionDataJson type:', typeof sessionDataJson);
+      
       this.db.run(
         `INSERT INTO user_sessions 
          (user_id, platform, session_type, session_data, expires_at) 
          VALUES (?, ?, ?, ?, ?)`,
-        [userId, platform, sessionType, JSON.stringify(sessionData), expiresAt],
+        [userId, platform, sessionType, sessionDataJson, expiresAt],
         function(err) {
           if (err) {
             logger.error('Error creating user session:', err);
             reject(err);
           } else {
+            logger.info('[DEBUG] createUserSession - created with ID:', this.lastID);
+            logger.info('[DEBUG] createUserSession - changes:', this.changes);
+            
+            // Immediately verify the session was created correctly
+            db.get(
+              'SELECT * FROM user_sessions WHERE id = ?',
+              [this.lastID],
+              (verifyErr, verifyRow) => {
+                if (verifyErr) {
+                  logger.error('[DEBUG] createUserSession - verification error:', verifyErr);
+                } else {
+                  logger.info('[DEBUG] createUserSession - verification row:', verifyRow);
+                  logger.info('[DEBUG] createUserSession - verification session_data:', verifyRow ? verifyRow.session_data : 'NO ROW');
+                  logger.info('[DEBUG] createUserSession - verification session_data length:', verifyRow && verifyRow.session_data ? verifyRow.session_data.length : 'N/A');
+                }
+              }
+            );
+            
             resolve(this.lastID);
           }
         }
@@ -264,7 +293,7 @@ class DatabaseService {
       this.db.get(
         `SELECT * FROM user_sessions 
          WHERE user_id = ? AND platform = ? AND session_type = ? 
-         AND (expires_at IS NULL OR expires_at > CURRENT_TIMESTAMP)
+         AND (expires_at IS NULL OR expires_at > (strftime('%s','now') * 1000))
          ORDER BY created_at DESC LIMIT 1`,
         [userId, platform, sessionType],
         (err, row) => {
@@ -284,18 +313,78 @@ class DatabaseService {
 
   async getUserSessionById(sessionId) {
     return new Promise((resolve, reject) => {
+      logger.info('[DEBUG] getUserSessionById - looking for sessionId:', sessionId);
+      // First, let's test with a simple query to see what we get
+      this.db.get(
+        'SELECT id, user_id, session_type, session_data FROM user_sessions WHERE id = ?',
+        [sessionId],
+        (testErr, testRow) => {
+          if (testErr) {
+            logger.error('[DEBUG] getUserSessionById - test query error:', testErr);
+          } else {
+            logger.info('[DEBUG] getUserSessionById - test query result:', testRow);
+            logger.info('[DEBUG] getUserSessionById - test query keys:', testRow ? Object.keys(testRow) : 'NO ROW');
+          }
+        }
+      );
+      // Main query: fix expires_at comparison to use epoch ms
       this.db.get(
         `SELECT * FROM user_sessions 
          WHERE id = ? 
-         AND (expires_at IS NULL OR expires_at > CURRENT_TIMESTAMP)`,
+         AND (expires_at IS NULL OR expires_at > (strftime('%s','now') * 1000))`,
         [sessionId],
         (err, row) => {
+          // --- Direct print for debugging ---
+          console.log('RAW ROW:', row);
+          console.log('RAW ROW KEYS:', row ? Object.keys(row) : 'NO ROW');
+          // --- End direct print ---
           if (err) {
             logger.error('Error getting user session by ID:', err);
             reject(err);
           } else {
+            logger.info('[DEBUG] getUserSessionById - found row:', !!row);
+            if (row) {
+              logger.info('[DEBUG] getUserSessionById - raw row data:', row);
+              logger.info('[DEBUG] getUserSessionById - raw row keys:', Object.keys(row));
+              logger.info('[DEBUG] getUserSessionById - raw row values:', Object.values(row));
+              // Patch: Find session_data key case-insensitively
+              const sessionDataKey = Object.keys(row).find(k => k.toLowerCase() === 'session_data');
+              logger.info('[DEBUG] getUserSessionById - sessionDataKey found:', sessionDataKey);
+              if (sessionDataKey) {
+                row.session_data = row[sessionDataKey];
+              }
+              logger.info('[DEBUG] getUserSessionById - row data:', { 
+                id: row.id, 
+                user_id: row.user_id, 
+                session_type: row.session_type,
+                expires_at: row.expires_at,
+                created_at: row.created_at,
+                session_data: row.session_data
+              });
+              logger.info('[DEBUG] getUserSessionById - session_data type:', typeof row.session_data);
+              logger.info('[DEBUG] getUserSessionById - session_data length:', row.session_data ? row.session_data.length : 'N/A');
+              logger.info('[DEBUG] getUserSessionById - session_data null check:', row.session_data === null);
+              logger.info('[DEBUG] getUserSessionById - session_data undefined check:', row.session_data === undefined);
+              logger.info('[DEBUG] getUserSessionById - session_data empty check:', row.session_data === '');
+              logger.info('[DEBUG] getUserSessionById - session_data truthy check:', !!row.session_data);
+            }
             if (row && row.session_data) {
-              row.session_data = JSON.parse(row.session_data);
+              try {
+                const originalData = row.session_data;
+                row.session_data = JSON.parse(row.session_data);
+                logger.info('[DEBUG] getUserSessionById - parsed session_data:', row.session_data);
+                logger.info('[DEBUG] getUserSessionById - original session_data:', originalData);
+              } catch (parseError) {
+                logger.error('[DEBUG] getUserSessionById - error parsing session_data:', parseError);
+                logger.error('[DEBUG] getUserSessionById - raw session_data that failed to parse:', row.session_data);
+              }
+            } else {
+              logger.warn('[DEBUG] getUserSessionById - no session_data found in row');
+              if (row) {
+                logger.warn('[DEBUG] getUserSessionById - row exists but session_data is falsy');
+                logger.warn('[DEBUG] getUserSessionById - session_data value:', row.session_data);
+                logger.warn('[DEBUG] getUserSessionById - session_data type:', typeof row.session_data);
+              }
             }
             resolve(row);
           }
