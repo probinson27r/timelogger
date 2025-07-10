@@ -1,1 +1,17 @@
-{"statusCode":200,"headers":{"Content-Type":"application/json"},"body":"{\"response_type\":\"ephemeral\",\"text\":\"Error: No command data received\"}"}
+{
+  "TimeLoggerStack": {
+    "MigrationUrl": "https://63jzcnjke8.execute-api.ap-southeast-2.amazonaws.com/prod/migration",
+    "HealthCheckUrl": "https://63jzcnjke8.execute-api.ap-southeast-2.amazonaws.com/prod/health",
+    "SlackEventsUrl": "https://63jzcnjke8.execute-api.ap-southeast-2.amazonaws.com/prod/slack/events",
+    "DebugVersionUrl": "https://63jzcnjke8.execute-api.ap-southeast-2.amazonaws.com/prod/debug-version",
+    "ApiGatewayUrl": "https://63jzcnjke8.execute-api.ap-southeast-2.amazonaws.com/prod/",
+    "TimeLoggerAPIEndpointF06C7E15": "https://63jzcnjke8.execute-api.ap-southeast-2.amazonaws.com/prod/",
+    "DatabaseWriterEndpoint": "timeloggerstack-auroracluster23d869c0-oeyxontyo7l8.cluster-c1agm8g6k440.ap-southeast-2.rds.amazonaws.com",
+    "DatabaseSecretArn": "arn:aws:secretsmanager:ap-southeast-2:199279692978:secret:AuroraSecret41E6E877-sp0l5vg9NaDz-m91D3u",
+    "SlackCommandsUrl": "https://63jzcnjke8.execute-api.ap-southeast-2.amazonaws.com/prod/slack/commands",
+    "SlackInteractionsUrl": "https://63jzcnjke8.execute-api.ap-southeast-2.amazonaws.com/prod/slack/interactions",
+    "AppSecretsArn": "arn:aws:secretsmanager:ap-southeast-2:199279692978:secret:AppSecretsA1997F2A-9V7N0BcKXIW5-c7zDSr",
+    "FixPermissionsUrl": "https://63jzcnjke8.execute-api.ap-southeast-2.amazonaws.com/prod/fix-permissions",
+    "DatabaseEndpoint": "timeloggerstack-auroracluster23d869c0-oeyxontyo7l8.cluster-c1agm8g6k440.ap-southeast-2.rds.amazonaws.com"
+  }
+}

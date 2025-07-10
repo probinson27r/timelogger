@@ -1,0 +1,79 @@
+display_information:
+  name: Time Logger Local
+  description: AI-powered time tracking bot with natural language processing and Jira integration
+  background_color: "#2c3e50"
+  long_description: "Time Logger Bot is a sophisticated multi-tenant application that allows team members to log time to Jira tickets using natural language. Each user securely configures their own Jira access, ensuring data privacy and supporting multiple Jira instances (Cloud and Server/Data Center). Features include: natural language time logging, smart ticket selection, comprehensive time reports, customizable icons, and seamless integration with both Slack and Teams."
+
+features:
+  app_home:
+    home_tab_enabled: true
+    messages_tab_enabled: false
+    messages_tab_read_only_enabled: false
+  bot_user:
+    display_name: Time Logger Local
+    always_online: true
+  slash_commands:
+    - command: /timelog
+      url: https://843fbe7e51a9.ngrok-free.app/slack/commands
+      description: Log time to a Jira ticket
+      usage_hint: "[hours] [ticket] [description]"
+      should_escape: false
+    - command: /mytickets
+      url: https://843fbe7e51a9.ngrok-free.app/slack/commands
+      description: Show your assigned Jira tickets
+      should_escape: false
+    - command: /timereport
+      url: https://843fbe7e51a9.ngrok-free.app/slack/commands
+      description: Generate a time report
+      usage_hint: "[period] [user]"
+      should_escape: false
+    - command: /jiraconfig
+      url: https://843fbe7e51a9.ngrok-free.app/slack/commands
+      description: Configure your Jira settings
+      should_escape: false
+    - command: /iconconfig
+      url: https://843fbe7e51a9.ngrok-free.app/slack/commands
+      description: Configure icon display preferences
+      should_escape: false
+
+oauth_config:
+  scopes:
+    bot:
+      - app_mentions:read
+      - channels:history
+      - channels:read
+      - chat:write
+      - chat:write.public
+      - commands
+      - groups:history
+      - groups:read
+      - im:history
+      - im:read
+      - im:write
+      - mpim:history
+      - mpim:read
+      - users:read
+      - users:read.email
+
+settings:
+  event_subscriptions:
+    request_url: https://843fbe7e51a9.ngrok-free.app/slack/events
+    bot_events:
+      - app_mention
+      - message.channels
+      - message.groups
+      - message.im
+      - message.mpim
+  interactivity:
+    is_enabled: true
+    request_url: https://843fbe7e51a9.ngrok-free.app/slack/interactions
+  org_deploy_enabled: false
+  socket_mode_enabled: false
+  token_rotation_enabled: false
+
+# Multi-Tenant Jira Cloud & Server Support
+# - Jira Cloud: Auto-detected for *.atlassian.net URLs, requires email + API token
+# - Jira Server: Auto-detected for other URLs, requires Personal Access Token
+# - All credentials encrypted per-user for security
+# Note: Update the URLs above to match your actual deployment domain
+# For local development with Socket Mode, URLs can be placeholder values 

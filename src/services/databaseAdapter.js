@@ -10,7 +10,7 @@ class DatabaseAdapter {
   }
 
   async initialize() {
-    if (this.service) return this.service;
+    if (this.service && this.service.db) return this.service;
 
     try {
       if (this.isAWS) {

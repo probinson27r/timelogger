@@ -1,4 +1,4 @@
-const { App } = require('@slack/bolt');
+const { App, ExpressReceiver } = require('@slack/bolt');
 const express = require('express');
 require('dotenv').config();
 
@@ -9,15 +9,31 @@ const slashCommandHandler = require('./handlers/slashCommandHandler');
 
 class TimeLoggerApp {
   constructor() {
+    const isProduction = process.env.NODE_ENV === 'production';
+
+    // Use ExpressReceiver for local development
+    let receiver;
+    if (!isProduction) {
+      receiver = new ExpressReceiver({
+        signingSecret: process.env.SLACK_SIGNING_SECRET,
+        endpoints: {
+          commands: '/slack/commands',
+          events: '/slack/events',
+          interactions: '/slack/interactions'
+        }
+      });
+    }
+
     this.app = new App({
       token: process.env.SLACK_BOT_TOKEN,
       signingSecret: process.env.SLACK_SIGNING_SECRET,
-      socketMode: true,
-      appToken: process.env.SLACK_APP_TOKEN,
-      port: process.env.PORT || 3000
+      socketMode: isProduction,
+      appToken: isProduction ? process.env.SLACK_APP_TOKEN : undefined,
+      receiver: receiver
     });
 
-    this.expressApp = express();
+    // Use the ExpressReceiver's app in local dev, otherwise create a new express app
+    this.expressApp = !isProduction && receiver ? receiver.app : express();
     this.setupHandlers();
     this.setupExpress();
   }
@@ -95,18 +111,19 @@ class TimeLoggerApp {
       res.json({ status: 'healthy', timestamp: new Date().toISOString() });
     });
 
-    // Start Express server
-    this.expressApp.listen(process.env.PORT || 3000, () => {
-      logger.info(`Express server listening on port ${process.env.PORT || 3000}`);
-    });
+    // In local development, start the ExpressReceiver server
+    if (process.env.NODE_ENV !== 'production') {
+      this.expressApp.listen(process.env.PORT || 3000, () => {
+        logger.info(`Express server listening on port ${process.env.PORT || 3000}`);
+      });
+    }
   }
 
   async start() {
     try {
-      // Initialize database
       await initializeDatabase();
       
-      // Start Slack app
+      // Start the Bolt app in both production and local development
       await this.app.start();
       
       logger.info('⚡️ Time Logger Slack app is running!');

@@ -1173,7 +1173,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-199279692978-ap-southeast-2",
-     "S3Key": "543f780cc2062944291d5ea5db87318327a05924328830f9152b23fbafc86d4a.zip"
+     "S3Key": "467a161fd886c0c42e9db91006b61a475d1381a8af56c02a48c9de7cfa5230b3.zip"
     },
     "Description": "Handle Slack events (messages, mentions) - Fixed v2025-07-07-NULL-CHECK",
     "Environment": {
@@ -1228,7 +1228,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "TimeLoggerStack/SlackEventsFunction/Resource",
-    "aws:asset:path": "asset.543f780cc2062944291d5ea5db87318327a05924328830f9152b23fbafc86d4a",
+    "aws:asset:path": "asset.467a161fd886c0c42e9db91006b61a475d1381a8af56c02a48c9de7cfa5230b3",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -1488,7 +1488,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-199279692978-ap-southeast-2",
-     "S3Key": "543f780cc2062944291d5ea5db87318327a05924328830f9152b23fbafc86d4a.zip"
+     "S3Key": "467a161fd886c0c42e9db91006b61a475d1381a8af56c02a48c9de7cfa5230b3.zip"
     },
     "Description": "Handle Slack interactions (buttons, menus) - Fixed v2025-07-07-NULL-CHECK",
     "Environment": {
@@ -1543,7 +1543,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "TimeLoggerStack/SlackInteractionsFunction/Resource",
-    "aws:asset:path": "asset.543f780cc2062944291d5ea5db87318327a05924328830f9152b23fbafc86d4a",
+    "aws:asset:path": "asset.467a161fd886c0c42e9db91006b61a475d1381a8af56c02a48c9de7cfa5230b3",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -1714,7 +1714,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-199279692978-ap-southeast-2",
-     "S3Key": "543f780cc2062944291d5ea5db87318327a05924328830f9152b23fbafc86d4a.zip"
+     "S3Key": "467a161fd886c0c42e9db91006b61a475d1381a8af56c02a48c9de7cfa5230b3.zip"
     },
     "Description": "Handle Slack slash commands - Fixed v2025-07-07-NULL-CHECK",
     "Environment": {
@@ -1769,7 +1769,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "TimeLoggerStack/SlackCommandsFunction/Resource",
-    "aws:asset:path": "asset.543f780cc2062944291d5ea5db87318327a05924328830f9152b23fbafc86d4a",
+    "aws:asset:path": "asset.467a161fd886c0c42e9db91006b61a475d1381a8af56c02a48c9de7cfa5230b3",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -1940,7 +1940,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-199279692978-ap-southeast-2",
-     "S3Key": "543f780cc2062944291d5ea5db87318327a05924328830f9152b23fbafc86d4a.zip"
+     "S3Key": "467a161fd886c0c42e9db91006b61a475d1381a8af56c02a48c9de7cfa5230b3.zip"
     },
     "Description": "Health check endpoint",
     "Environment": {
@@ -1995,7 +1995,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "TimeLoggerStack/HealthFunction/Resource",
-    "aws:asset:path": "asset.543f780cc2062944291d5ea5db87318327a05924328830f9152b23fbafc86d4a",
+    "aws:asset:path": "asset.467a161fd886c0c42e9db91006b61a475d1381a8af56c02a48c9de7cfa5230b3",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -2166,7 +2166,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-199279692978-ap-southeast-2",
-     "S3Key": "543f780cc2062944291d5ea5db87318327a05924328830f9152b23fbafc86d4a.zip"
+     "S3Key": "467a161fd886c0c42e9db91006b61a475d1381a8af56c02a48c9de7cfa5230b3.zip"
     },
     "Description": "Database migration and setup",
     "Environment": {
@@ -2221,7 +2221,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "TimeLoggerStack/MigrationFunction/Resource",
-    "aws:asset:path": "asset.543f780cc2062944291d5ea5db87318327a05924328830f9152b23fbafc86d4a",
+    "aws:asset:path": "asset.467a161fd886c0c42e9db91006b61a475d1381a8af56c02a48c9de7cfa5230b3",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -2392,7 +2392,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-199279692978-ap-southeast-2",
-     "S3Key": "543f780cc2062944291d5ea5db87318327a05924328830f9152b23fbafc86d4a.zip"
+     "S3Key": "467a161fd886c0c42e9db91006b61a475d1381a8af56c02a48c9de7cfa5230b3.zip"
     },
     "Description": "Fix Aurora database permissions for timelogger_admin user",
     "Environment": {
@@ -2447,7 +2447,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "TimeLoggerStack/FixPermissionsFunction/Resource",
-    "aws:asset:path": "asset.543f780cc2062944291d5ea5db87318327a05924328830f9152b23fbafc86d4a",
+    "aws:asset:path": "asset.467a161fd886c0c42e9db91006b61a475d1381a8af56c02a48c9de7cfa5230b3",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -2618,7 +2618,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-199279692978-ap-southeast-2",
-     "S3Key": "543f780cc2062944291d5ea5db87318327a05924328830f9152b23fbafc86d4a.zip"
+     "S3Key": "467a161fd886c0c42e9db91006b61a475d1381a8af56c02a48c9de7cfa5230b3.zip"
     },
     "Description": "Debug endpoint to check code version",
     "Environment": {
@@ -2673,7 +2673,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "TimeLoggerStack/DebugVersionFunction/Resource",
-    "aws:asset:path": "asset.543f780cc2062944291d5ea5db87318327a05924328830f9152b23fbafc86d4a",
+    "aws:asset:path": "asset.467a161fd886c0c42e9db91006b61a475d1381a8af56c02a48c9de7cfa5230b3",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
